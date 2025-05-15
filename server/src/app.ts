@@ -7,8 +7,9 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-app.get("/api", (req, res) => {
-  res.send("Root api test");
+app.get("/api/fruits", (req, res) => {
+  const fruits = ["apple", "bannana", "avocado", "kiwi", "orange"];
+  res.json({ fruits });
 });
 
 app.use(express.static(join(__dirname, "../../client/dist")));
