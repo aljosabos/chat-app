@@ -9,6 +9,13 @@ const app = express();
 
 app.get("/api/fruits", (req, res) => {
   const fruits = ["apple", "bannana", "avocado", "kiwi", "orange"];
+
+  const oneDay = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+
+  res.cookie("test_cookie", "some_value", {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay),
+  });
   res.json({ fruits });
 });
 
