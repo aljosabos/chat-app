@@ -21,7 +21,12 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@icons/*": ["./images/icons/*"],
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "**/*.ts", "**/*.tsx"]
 }

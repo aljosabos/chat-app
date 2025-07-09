@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import ChatIcon from "@icons/Chat";
 
 function App() {
   const [fruits, setFruits] = useState([]);
@@ -19,6 +20,8 @@ function App() {
           <li key={fruit}>{fruit}</li>
         ))}
       </ul>
+
+      <ChatIcon />
     </div>
   );
 }
