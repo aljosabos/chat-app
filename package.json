@@ -3,7 +3,8 @@
   "scripts": {
     "build": "cd client && npm install && npm run build && cd ../server && npm install && npx tsc",
     "start": "node server/dist/index.js",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "cd client && npx eslint . && cd ../server && npx eslint ."
   },
   "version": "1.0.0",
   "main": "index.js",
@@ -13,16 +14,6 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2"
-  },
-  "lint-staged": {
-    "client/**/*.{ts,tsx,js,jsx}": [
-      "npm run lint --prefix client",
-      "tsc --noEmit -p client"
-    ],
-    "server/**/*.{ts,js}": [
-      "npm run lint --prefix server",
-      "tsc --noEmit -p server"
-    ]
   },
   "dependencies": {
     "ansi-escapes": "^7.0.0",
@@ -63,5 +54,8 @@
     "wrap-ansi": "^9.0.0",
     "yaml": "^2.8.0"
   },
-  "description": ""
+  "description": "",
+  "lint-staged": {
+    "*": "npm run lint"
+  }
 }

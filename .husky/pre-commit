@@ -1,13 +1,15 @@
-set -e # Exit immediately if any command fails
+set -e
 
-echo "Running linting and type-checking for server..."
+# Type-check za server
 cd server
-npm run lint
 tsc --noEmit
 
-echo "Running linting and type-checking for client..."
+# Type-check za client
 cd ../client
-npm run lint
 tsc --build tsconfig.app.json --noEmit
 
-echo "Pre-commit checks passed!"
+# Vrati se u root folder
+cd ..
+
+# Pokreni lint-staged iz root-a gde je ESLint konfiguracija
+npm exec lint-staged
