@@ -14,6 +14,9 @@ server/dist/
 server/.env
 server/.DS_Store
 
+# Root
+node_modules/
+
 # OS/system files
 .DS_Store
 Thumbs.db

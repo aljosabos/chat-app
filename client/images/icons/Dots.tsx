@@ -1,6 +1,7 @@
-import React from "react";
-
-export default function DotsIcon({ className }) {
+interface IDotsIconProps {
+  className?: string;
+}
+export default function DotsIcon({ className }: IDotsIconProps) {
   return (
     <svg
       viewBox="0 0 24 24"

@@ -1,6 +1,8 @@
-import React from "react";
+interface ISmallArrowIconProps {
+  className?: string;
+}
 
-function SmallArrowIcon({ className }) {
+function SmallArrowIcon({ className }: ISmallArrowIconProps) {
   return (
     <svg width="10" height="21" x="0" y="0" viewBox="0 0 10 21">
       <path

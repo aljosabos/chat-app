@@ -1,6 +1,7 @@
-import React from "react";
-
-export default function ArrowIcon({ className }) {
+interface IArrowIconProps {
+  className?: string;
+}
+export default function ArrowIcon({ className }: IArrowIconProps) {
   return (
     <svg
       viewBox="0 0 8 12"

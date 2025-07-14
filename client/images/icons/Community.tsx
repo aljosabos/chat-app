@@ -1,6 +1,7 @@
-import React from "react";
-
-export default function CommunityIcon({ className }) {
+interface ICommunityProps {
+  className?: string;
+}
+export default function CommunityIcon({ className }: ICommunityProps) {
   return (
     <svg
       viewBox="0 0 28 28"

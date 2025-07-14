@@ -1,0 +1,13 @@
+set -e # Exit immediately if any command fails
+
+echo "Running linting and type-checking for server..."
+cd server
+npm run lint
+tsc --noEmit
+
+echo "Running linting and type-checking for client..."
+cd ../client
+npm run lint
+tsc --build tsconfig.app.json --noEmit
+
+echo "Pre-commit checks passed!"

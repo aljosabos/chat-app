@@ -1,6 +1,7 @@
-import React from "react";
-
-function EmojiIcon({ className }) {
+interface IEmojiIconProps {
+  className?: string;
+}
+function EmojiIcon({ className }: IEmojiIconProps) {
   return (
     <svg
       width="28"

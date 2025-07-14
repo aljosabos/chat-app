@@ -1,6 +1,7 @@
-import React from "react";
-
-export default function SearchIcon({ className }) {
+interface ISearchIconProps {
+  className?: string;
+}
+export default function SearchIcon({ className }: ISearchIconProps) {
   return (
     <svg
       viewBox="0 0 24 24"

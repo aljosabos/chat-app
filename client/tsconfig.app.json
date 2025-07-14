@@ -24,9 +24,9 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@icons/*": ["./images/icons/*"],
+      "@icons/*": ["images/icons/*"],
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "**/*.ts", "**/*.tsx"]
+  "include": ["src", "images/icons"]
 }

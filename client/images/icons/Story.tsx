@@ -1,6 +1,8 @@
-import React from "react";
-
-export default function StoryIcon({ className, active }) {
+interface IStoryIconProps {
+  className?: string;
+  active?: boolean;
+}
+export default function StoryIcon({ className, active }: IStoryIconProps) {
   if (active) {
     return (
       <svg

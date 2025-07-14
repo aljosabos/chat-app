@@ -1,6 +1,7 @@
-import React from "react";
-
-export default function ReturnIcon({ className }) {
+interface IReturnIconProps {
+  className?: string;
+}
+export default function ReturnIcon({ className }: IReturnIconProps) {
   return (
     <svg
       viewBox="0 0 24 24"

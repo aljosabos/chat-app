@@ -1,6 +1,7 @@
-import React from "react";
-
-export default function CloseIcon({ className }) {
+interface ICloseIconProps {
+  className?: string;
+}
+export default function CloseIcon({ className }: ICloseIconProps) {
   return (
     <svg
       viewBox="0 0 24 24"

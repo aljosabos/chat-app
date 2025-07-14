@@ -1,6 +1,7 @@
-import React from "react";
-
-export default function FilterIcon({ className }) {
+interface IFilterIconProps {
+  className?: string;
+}
+export default function FilterIcon({ className }: IFilterIconProps) {
   return (
     <svg
       viewBox="0 0 24 24"

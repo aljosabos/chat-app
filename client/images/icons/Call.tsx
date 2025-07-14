@@ -1,7 +1,8 @@
-import React from "react";
+interface ICallProps {
+  className?: string;
+}
 
-
-function CallIcon({ className }) {
+function CallIcon({ className }: ICallProps) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="40">
       <path

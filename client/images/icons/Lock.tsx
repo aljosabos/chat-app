@@ -1,6 +1,7 @@
-import React from "react";
-
-function LockIcon({ className }) {
+interface ILockIconProps {
+  className?: string;
+}
+function LockIcon({ className }: ILockIconProps) {
   return (
     <svg width="24" height="24" viewBox="0 0 28 35">
       <path

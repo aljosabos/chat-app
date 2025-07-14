@@ -1,6 +1,7 @@
-import React from "react";
-
-export default function NotificationIcon({ className }) {
+interface INotificationIconProps {
+  className?: string;
+}
+export default function NotificationIcon({ className }: INotificationIconProps) {
   return (
     <svg
       viewBox="0 0 48 48"

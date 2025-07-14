@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import ChatIcon from "@icons/Chat";
+import ChatIcon from "images/icons/Chat";
 
 function App() {
   const [fruits, setFruits] = useState([]);

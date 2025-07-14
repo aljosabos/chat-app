@@ -1,6 +1,7 @@
-import React from "react";
-
-function NoVideoIcon({ className }) {
+interface INoVideoProps {
+  className?: string;
+}
+function NoVideoIcon({ className }: INoVideoProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
