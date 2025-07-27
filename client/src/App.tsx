@@ -13,8 +13,8 @@ function App() {
   }, []);
 
   return (
-    <div className="text-lg text-red-500">
-      <ul className="bg-red-300">
+    <div className="dark">
+      <ul className="bg-red-200 dark:bg-green-200">
         {fruits?.map((fruit) => (
           <li key={fruit}>{fruit}</li>
         ))}
