@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ChatIcon from "images/icons/Chat";
+import ChatIcon from "@icons/Chat";
 
 function App() {
   const [fruits, setFruits] = useState([]);
