@@ -26,6 +26,7 @@
     "paths": {
       "@icons/*": ["images/icons/*"],
       "@pages/*": ["src/pages/*"],
+      "@features/*": ["src/features/*"],
       "@/*": ["src/*"]
     }
   },
