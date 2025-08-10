@@ -24,6 +24,15 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  Object.defineProperty(req, "query", {
+    ...Object.getOwnPropertyDescriptor(req, "query"),
+    value: req.query,
+    writable: true,
+  });
+  next();
+});
+
 //morgan
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
