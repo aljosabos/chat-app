@@ -43,6 +43,7 @@
     "express-mongo-sanitize": "^2.2.0",
     "extensionless": "^1.9.9",
     "helmet": "^8.1.0",
+    "http-errors": "^2.0.0",
     "mongoose": "^8.17.1",
     "morgan": "^1.10.1",
     "next": "^15.3.2",

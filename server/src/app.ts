@@ -75,6 +75,9 @@ app.get("/api/fruits", (req, res) => {
   res.json({ fruits });
 });
 
+//error handling
+app.use();
+
 app.use(express.static(join(__dirname, "../../client/dist")));
 
 export default app;
