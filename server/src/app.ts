@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
@@ -9,11 +9,17 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import fileUpload from "express-fileupload";
 import cors from "cors";
+import { Error } from "mongoose";
+import createHttpError from "http-errors";
+import routes from "./routes/index.js";
+
+dotenv.config();
+interface HttpError extends Error {
+  status?: number;
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-dotenv.config();
 
 const app = express();
 
@@ -75,8 +81,28 @@ app.get("/api/fruits", (req, res) => {
   res.json({ fruits });
 });
 
+//routes
+//http://localhost:8000/api/v1/auth/register
+app.use("/api/v1", routes);
+
+//not-found route
+app.use(async (req, res, next) => {
+  next(createHttpError.NotFound("This route does not exist."));
+});
+
 //error handling
-app.use();
+app.use(
+  async (err: HttpError, req: Request, res: Response, next: NextFunction) => {
+    res.status(err?.status ?? 500);
+    res.send({
+      error: {
+        status: err.status ?? 500,
+        message: err.message,
+      },
+    });
+    next();
+  }
+);
 
 app.use(express.static(join(__dirname, "../../client/dist")));
 
