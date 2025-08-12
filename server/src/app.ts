@@ -85,8 +85,11 @@ app.get("/api/fruits", (req, res) => {
 //http://localhost:8000/api/v1/auth/register
 app.use("/api/v1", routes);
 
+//serving frontend app
+app.use(express.static(join(__dirname, "../../client/dist")));
+
 //not-found route
-app.use(async (req, res, next) => {
+app.use((req, res, next) => {
   next(createHttpError.NotFound("This route does not exist."));
 });
 
@@ -100,10 +103,7 @@ app.use(
         message: err.message,
       },
     });
-    next();
   }
 );
-
-app.use(express.static(join(__dirname, "../../client/dist")));
 
 export default app;
