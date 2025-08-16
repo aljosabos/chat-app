@@ -1,4 +1,4 @@
-import { registerUserValidator } from "#validators/authValidator.js";
+import { registerUserValidator } from "../validators/authValidator.js";
 import {
   login,
   logout,
