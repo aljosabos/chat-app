@@ -1,3 +1,4 @@
+import { User } from "../models/index.js";
 import { NextFunction, Request, Response } from "express";
 
 export const register = async (
@@ -6,7 +7,8 @@ export const register = async (
   next: NextFunction
 ) => {
   try {
-    res.send("Register");
+    const user = await User.create({ ...req.body });
+    res.json({ user });
   } catch (err) {
     next(err);
   }

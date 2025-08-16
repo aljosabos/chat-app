@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema(
     },
     picture: {
       type: String,
-      default: "",
+      default:
+        "https://res.cloudinary.com/deidpvd0b/image/upload/v1755332966/default_user_c2flai.png",
     },
     status: {
       type: String,
@@ -36,4 +37,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-export const User = mongoose.model("UserModel", userSchema);
+export const User = mongoose.model("User", userSchema);

@@ -1,3 +1,4 @@
+import { registerUserValidator } from "#validators/authValidator.js";
 import {
   login,
   logout,
@@ -9,7 +10,9 @@ import trimRequest from "trim-request";
 
 const router = express.Router();
 
-router.route("/register").post(trimRequest.all, register);
+router
+  .route("/register")
+  .post(trimRequest.all, ...registerUserValidator, register);
 router.route("/login").post(trimRequest.all, login);
 router.route("/logout").post(trimRequest.all, logout);
 router.route("/refreshToken").post(trimRequest.all, refreshToken);
