@@ -1,4 +1,4 @@
-import { generateToken } from "../utils/token.js";
+import { generateToken, verifyToken } from "../utils/token.js";
 import { User } from "../models/index.js";
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
@@ -128,7 +128,44 @@ export const refreshToken = async (
   next: NextFunction
 ) => {
   try {
-    res.send("Refresh token");
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) throw new createHttpError.Unauthorized("Please login");
+
+    // data of the user based on refresh token
+    const decoded = verifyToken(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET!
+    );
+
+    if (!decoded) throw new createHttpError.Unauthorized("Please login");
+
+    const user = await User.findById({ _id: decoded.userId });
+
+    if (!user) throw new createHttpError.Unauthorized("No user found");
+
+    // generate new access token
+    const payload = { userId: user._id.toString() };
+
+    const accessToken = generateToken(
+      payload,
+      "1d",
+      process.env.ACCESS_TOKEN_SECRET!
+    );
+
+    console.log(user);
+
+    res.json({
+      message: "new access token generated.",
+      accessToken,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+        status: user.status,
+      },
+    });
   } catch (err) {
     next(err);
   }
