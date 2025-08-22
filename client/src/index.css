@@ -1,3 +1,37 @@
 @import "tailwindcss";
 /* must use .css instead of .scss extension for this file since tailwind is using postcss */
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-dark-bg-1: #111b21;
+  --color-dark-bg-2: #202c33;
+  --color-dark-bg-3: #182229;
+  --color-dark-bg-4: #222e35;
+  --color-dark-bg-5: #233138;
+  --color-dark-bg-6: #101a20;
+
+  --color-dark-border-1: #222d34;
+  --color-dark-border-2: #313d45;
+
+  --color-dark-hover-1: #2a3942;
+
+  --color-dark-svg-1: #aebac1;
+  --color-dark-svg-2: #8696a0;
+
+  --color-blue-1: #53bdeb;
+  --color-blue-2: #3e7b96;
+
+  /* text colors */
+  --color-dark-text-1: #e9edef;
+  --color-dark-text-2: #8696a0;
+  --color-dark-text-3: #8696a0;
+  --color-dark-text-4: #d1d6d8;
+  --color-dark-text-5: #99beb7;
+
+  --color-dark-scrollbar: #374045;
+
+  --color-green-1: #00a884;
+  --color-green-2: #008069;
+  --color-green-3: #005c4b;
+  --color-green-4: #025144;
+}
