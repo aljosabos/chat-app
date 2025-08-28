@@ -1,13 +1,13 @@
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { increment } from "@features/counter/counterSlice";
+import { useAppDispatch } from "@/hooks/redux";
+import { logout, userSelector } from "@features/user/userSlice";
 
 export const Home = () => {
-  const count = useAppSelector((state) => state.counter?.value);
+  const user = userSelector;
   const dispatch = useAppDispatch();
   return (
     <div>
-      <h1>{count}</h1>
-      <button onClick={() => dispatch(increment())}>Increment counter</button>
+      <h1>{user.name}</h1>
+      <button onClick={() => dispatch(logout())}>Increment counter</button>
     </div>
   );
 };

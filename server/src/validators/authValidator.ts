@@ -4,7 +4,13 @@ import { User } from "../models/index.js";
 import createHttpError from "http-errors";
 
 export const registerUserValidator = validator([
-  body("name").trim().notEmpty().withMessage("Name is required"),
+  body("name")
+    .trim()
+    .notEmpty()
+    .withMessage("Name is required")
+    .isLength({ min: 2, max: 16 })
+    .withMessage("Name must be between 2 and 16 characters long"),
+
   body("email")
     .trim()
     .notEmpty()
@@ -22,6 +28,7 @@ export const registerUserValidator = validator([
       }
       return true;
     }),
+
   body("password")
     .trim()
     .notEmpty()
@@ -29,6 +36,7 @@ export const registerUserValidator = validator([
     .bail()
     .isLength({ min: 3, max: 10 })
     .withMessage("Password must be between 3 and 10 characters long"),
+
   body("status")
     .optional()
     .trim()
