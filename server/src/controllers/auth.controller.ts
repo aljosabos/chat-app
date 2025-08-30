@@ -12,16 +12,16 @@ export const register = async (
   try {
     const newUser = await User.create({ ...req.body });
 
-    const payload = { userId: newUser._id.toString() };
+    const tokenPayload = { userId: newUser._id.toString() };
 
     const accessToken = generateToken(
-      payload,
+      tokenPayload,
       "1d",
       process.env.ACCESS_TOKEN_SECRET!
     );
 
     const refreshToken = generateToken(
-      payload,
+      tokenPayload,
       "30d",
       process.env.REFRESH_TOKEN_SECRET!
     );
@@ -36,13 +36,13 @@ export const register = async (
 
     res.json({
       message: "register success.",
-      accessToken,
       user: {
         _id: newUser.id,
         name: newUser.name,
         email: newUser.email,
         picture: newUser.picture,
         status: newUser.status,
+        accessToken,
       },
     });
   } catch (err) {

@@ -8,14 +8,7 @@ export const registerSchema = z.object({
     .min(2, { message: "Name must be between 2 and 16 characters long" })
     .max(16, { message: "Name must be between 2 and 16 characters long" }),
 
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Email is not valid")
-    .refine(
-      (e) => e === "aljosabos@gmail.com",
-      "This email is not in our database"
-    ),
+  email: z.string().min(1, "Email is required").email("Email is not valid"),
 
   status: z.string().max(64, "Status must be less than 64 characters long"),
 

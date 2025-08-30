@@ -2,12 +2,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { registerSchema, type RegisterFormValues } from "./RegisterForm.schema";
 import { Input } from "../Input/Input";
-import { useAppSelector } from "@/hooks/redux";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { PulseLoader } from "react-spinners";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "@features/user/userSlice";
+import { useEffect } from "react";
 
 export const RegisterForm = () => {
-  const { status } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { registerStatus, error } = useAppSelector((state) => state.user);
+
   const {
     handleSubmit,
     register,
@@ -22,9 +27,15 @@ export const RegisterForm = () => {
     },
   });
 
-  const handleFormSubmit = (data: RegisterFormValues) => {
-    console.log(data);
+  const handleFormSubmit = async (fields: RegisterFormValues) => {
+    await dispatch(registerUser(fields));
   };
+
+  useEffect(() => {
+    if (registerStatus === "success") {
+      navigate("/");
+    }
+  }, [registerStatus, navigate]);
 
   return (
     <div className="h-screen w-full flex items-center justify-center overflow-hidden">
@@ -61,12 +72,13 @@ export const RegisterForm = () => {
             error={errors.password?.message}
             register={register}
           />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <button
             type="submit"
             className="w-full flex justify-center bg-green-1 text-gray-100 p-4 rounded-full tracking-wide font-semibold focus:outline-none hover:bg-green-2 shadow-lg cursor-pointer transition ease-in duration-300"
           >
-            {status === "loading" ? (
+            {status === "pending" ? (
               <PulseLoader color="#fff" size={16} />
             ) : (
               "Sign up"
