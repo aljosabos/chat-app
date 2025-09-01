@@ -7,6 +7,7 @@ import { PulseLoader } from "react-spinners";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "@features/user/userSlice";
 import { useEffect } from "react";
+import { FileUpload } from "@components/FileUpload/FileUpload";
 
 export const RegisterForm = () => {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export const RegisterForm = () => {
 
           <Input
             name="status"
-            placeholder="Status"
+            placeholder="Status (Optional)"
             error={errors.status?.message}
             register={register}
           />
@@ -72,6 +73,9 @@ export const RegisterForm = () => {
             error={errors.password?.message}
             register={register}
           />
+
+          <FileUpload />
+
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <button

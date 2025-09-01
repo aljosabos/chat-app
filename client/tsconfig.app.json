@@ -25,6 +25,7 @@
     "baseUrl": ".",
     "paths": {
       "@icons/*": ["images/icons/*"],
+      "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
       "@features/*": ["src/features/*"],
       "@/*": ["src/*"]
