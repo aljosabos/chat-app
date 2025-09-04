@@ -3,6 +3,20 @@ import { User } from "../models/index.js";
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
+import { v2 as cloudinary } from "cloudinary";
+
+const uploadToCloudinary = (fileBuffer: Buffer): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "users" },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result?.secure_url || "");
+      }
+    );
+    stream.end(fileBuffer);
+  });
+};
 
 export const register = async (
   req: Request,
@@ -10,7 +24,18 @@ export const register = async (
   next: NextFunction
 ) => {
   try {
-    const newUser = await User.create({ ...req.body });
+    const userData = { ...req.body };
+
+    if (req.file) {
+      const imageUrl = await uploadToCloudinary(req.file.buffer);
+      userData.picture = imageUrl;
+    }
+
+    if (userData.password) {
+      userData.password = await bcrypt.hash(userData.password, 10);
+    }
+
+    const newUser = await User.create(userData);
 
     const tokenPayload = { userId: newUser._id.toString() };
 
@@ -19,7 +44,6 @@ export const register = async (
       "1d",
       process.env.ACCESS_TOKEN_SECRET!
     );
-
     const refreshToken = generateToken(
       tokenPayload,
       "30d",
@@ -29,10 +53,8 @@ export const register = async (
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       path: "/api/v1/auth/refreshToken",
-      maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     });
-
-    console.table({ accessToken, refreshToken });
 
     res.json({
       message: "register success.",

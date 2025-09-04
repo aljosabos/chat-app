@@ -6,13 +6,16 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { PulseLoader } from "react-spinners";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "@features/user/userSlice";
-import { useEffect } from "react";
+import { useState } from "react";
 import { FileUpload } from "@components/FileUpload/FileUpload";
 
 export const RegisterForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { registerStatus, error } = useAppSelector((state) => state.user);
+
+  const [picture, setPicture] = useState<File | null>(null);
+
+  const { error } = useAppSelector((state) => state.user);
 
   const {
     handleSubmit,
@@ -29,14 +32,30 @@ export const RegisterForm = () => {
   });
 
   const handleFormSubmit = async (fields: RegisterFormValues) => {
-    await dispatch(registerUser(fields));
+    try {
+      const formData = new FormData();
+      formData.append("name", fields.name);
+      formData.append("email", fields.email);
+      formData.append("status", fields.status || "");
+      formData.append("password", fields.password);
+
+      if (picture) {
+        formData.append("picture", picture);
+      }
+
+      const res = await dispatch(registerUser(formData)).unwrap();
+
+      if (res.user) navigate("/");
+    } catch (err) {
+      console.error("Registration error:", err);
+    }
   };
 
-  useEffect(() => {
-    if (registerStatus === "success") {
-      navigate("/");
-    }
-  }, [registerStatus, navigate]);
+  // useEffect(() => {
+  //   if (registerStatus === "success") {
+  //     navigate("/");
+  //   }
+  // }, [registerStatus, navigate]);
 
   return (
     <div className="h-screen w-full flex items-center justify-center overflow-hidden">
@@ -74,7 +93,7 @@ export const RegisterForm = () => {
             register={register}
           />
 
-          <FileUpload />
+          <FileUpload onFileSelect={(pic) => setPicture(pic)} />
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 

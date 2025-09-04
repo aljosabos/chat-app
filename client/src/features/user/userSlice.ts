@@ -1,4 +1,3 @@
-import type { RegisterFormValues } from "@/components/RegisterForm/RegisterForm.schema";
 import type { RootState } from "@/store";
 import type { ApiError } from "@/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -43,18 +42,16 @@ const initialState: UserState = {
 };
 
 // thunks
-
 export const registerUser = createAsyncThunk<
-  RegisterUserResonse, // return type (success)
-  RegisterFormValues, // argument type
-  { rejectValue: { error: ApiError } } // reject type
->("auth/register", async (fields, { rejectWithValue }) => {
+  RegisterUserResonse,
+  FormData,
+  { rejectValue: { error: ApiError } }
+>("auth/register", async (formData, { rejectWithValue }) => {
   try {
     const url = `${import.meta.env.VITE_API_URL}/api/v1/auth/register`;
     const response = await fetch(url, {
       method: "POST",
-      body: JSON.stringify(fields),
-      headers: { "Content-Type": "application/json" },
+      body: formData,
     });
 
     if (!response.ok) {

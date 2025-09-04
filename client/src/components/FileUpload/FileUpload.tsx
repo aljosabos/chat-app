@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export const FileUpload = () => {
+interface FileUploadProps {
+  onFileSelect: (file: File | null) => void;
+}
+
+export const FileUpload = ({ onFileSelect }: FileUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string>();
@@ -23,18 +27,20 @@ export const FileUpload = () => {
 
       setPreview(URL.createObjectURL(image));
       setFile(image);
+      onFileSelect(image);
     }
   };
 
   const handleFileRemove = () => {
     setFile(null);
     setPreview(null);
+    onFileSelect(null);
   };
 
   return (
     <div className="text-white text-sm mt-8 dark:bg-dark-bg-3 p-4 rounded-xl">
       {!file ? (
-        <label htmlFor="image" className="cursor-pointer">
+        <label htmlFor="picture" className="cursor-pointer">
           Select image
         </label>
       ) : (
@@ -51,8 +57,8 @@ export const FileUpload = () => {
       <input
         type="file"
         accept="image/jpeg, image/png, image/webp, .jpg, .jpeg, .png, .webp"
-        name="image"
-        id="image"
+        name="picture"
+        id="picture"
         hidden
         className="w-full"
         onChange={handleFileChange}

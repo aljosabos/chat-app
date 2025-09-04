@@ -12,11 +12,18 @@ import cors from "cors";
 import { Error } from "mongoose";
 import createHttpError from "http-errors";
 import routes from "./routes/index.js";
-
-dotenv.config();
+import { v2 as cloudinary } from "cloudinary";
 interface HttpError extends Error {
   status?: number;
 }
+
+dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -61,9 +68,6 @@ app.use(cookieParser());
 
 //gzip compression
 app.use(compression());
-
-//file upload
-app.use(fileUpload({ useTempFiles: true }));
 
 app.post("/api/test", (req, res) => {
   res.json({ res: req.body });
