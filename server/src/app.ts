@@ -89,10 +89,19 @@ app.get("/api/fruits", (req, res) => {
 //http://localhost:8000/api/v1/auth/register
 app.use("/api/v1", routes);
 
-//serving frontend app
+// Serving frontend build
 app.use(express.static(join(__dirname, "../../client/dist")));
 
-//not-found route
+// SPA Fallback - sve ne-API rute vraćaju index.html
+app.get("*", (req, res, next) => {
+  if (!req.path.startsWith("/api")) {
+    res.sendFile(join(__dirname, "../../client/dist/index.html"));
+  } else {
+    next();
+  }
+});
+
+// Not-found for API only
 app.use((req, res, next) => {
   next(createHttpError.NotFound("This route does not exist."));
 });
