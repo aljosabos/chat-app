@@ -93,7 +93,7 @@ app.use("/api/v1", routes);
 app.use(express.static(join(__dirname, "../../client/dist")));
 
 // SPA Fallback - sve ne-API rute vraćaju index.html
-app.get("*", (req, res, next) => {
+app.get("/*", (req, res, next) => {
   if (!req.path.startsWith("/api")) {
     res.sendFile(join(__dirname, "../../client/dist/index.html"));
   } else {
