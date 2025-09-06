@@ -31,10 +31,6 @@ export const register = async (
       userData.picture = imageUrl;
     }
 
-    if (userData.password) {
-      userData.password = await bcrypt.hash(userData.password, 10);
-    }
-
     const newUser = await User.create(userData);
 
     const tokenPayload = { userId: newUser._id.toString() };
@@ -83,7 +79,7 @@ export const login = async (
     if (!email || !password)
       throw new createHttpError.BadRequest("Email and password are required");
 
-    const user = await User.findOne({ email }).lean();
+    const user = await User.findOne({ email });
 
     if (!user)
       throw new createHttpError.NotFound("User with this email does not exist");
@@ -174,8 +170,6 @@ export const refreshToken = async (
       "1d",
       process.env.ACCESS_TOKEN_SECRET!
     );
-
-    console.log(user);
 
     res.json({
       message: "new access token generated.",

@@ -15,7 +15,7 @@ export const RegisterForm = () => {
 
   const [picture, setPicture] = useState<File | null>(null);
 
-  const { error } = useAppSelector((state) => state.user);
+  const { authStatus, error } = useAppSelector((state) => state.user);
 
   const {
     handleSubmit,
@@ -101,7 +101,7 @@ export const RegisterForm = () => {
             type="submit"
             className="w-full flex justify-center bg-green-1 text-gray-100 p-4 rounded-full tracking-wide font-semibold focus:outline-none hover:bg-green-2 shadow-lg cursor-pointer transition ease-in duration-300"
           >
-            {status === "pending" ? (
+            {authStatus === "pending" ? (
               <PulseLoader color="#fff" size={16} />
             ) : (
               "Sign up"
