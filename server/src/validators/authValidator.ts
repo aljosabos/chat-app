@@ -43,20 +43,6 @@ export const registerUserValidator = validator([
     .isLength({ max: 64 })
     .withMessage("Status must be maximum 64 characters long"),
 
-  // picture validator: proverava req.file, ne body
-  // body("picture").custom((_, { req }) => {
-  //   const file = req.file;
-  //   if (!file) return true; // opcionalno
-  //   const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
-  //   if (!allowedMimes.includes(file.mimetype)) {
-  //     throw new createHttpError.BadRequest("Picture must be JPEG/PNG/WEBP");
-  //   }
-  //   if (file.size > 5 * 1024 * 1024) {
-  //     throw new createHttpError.BadRequest("Picture must be smaller than 5MB");
-  //   }
-  //   return true;
-  // }),
-
   body("picture").custom((_, { req }) => {
     const file = req.file;
     if (!file) return true; // opcionalno

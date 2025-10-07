@@ -69,22 +69,6 @@ app.use(cookieParser());
 //gzip compression
 app.use(compression());
 
-app.post("/api/test", (req, res) => {
-  res.json({ res: req.body });
-});
-
-app.get("/api/fruits", (req, res) => {
-  const fruits = ["apple", "bannana", "avocado", "kiwi", "orange"];
-
-  const oneDay = 24 * 60 * 60 * 1000; // 1 day in milliseconds
-
-  res.cookie("test_cookie", "some_value", {
-    httpOnly: true,
-    expires: new Date(Date.now() + oneDay),
-  });
-  res.json({ fruits });
-});
-
 //routes
 //http://localhost:8000/api/v1/auth/register
 app.use("/api/v1", routes);

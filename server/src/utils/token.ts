@@ -20,15 +20,25 @@ export const verifyToken = (
   token: string,
   secret: string
 ): IUserPayload | null => {
-  const decoded = jwt.verify(token, secret);
+  try {
+    const decoded = jwt.verify(token, secret);
 
-  if (isUserPayload(decoded)) {
-    return decoded;
-  } else {
+    if (isUserPayload(decoded)) {
+      return decoded;
+    }
     return null;
+  } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      // Token je istekao
+      throw new createHttpError.Unauthorized("Access token expired");
+    }
+    if (err instanceof jwt.JsonWebTokenError) {
+      // Token je nevažeći
+      throw new createHttpError.Unauthorized("Invalid access token");
+    }
+    throw err; // fallback
   }
 };
-
 const isUserPayload = (
   payload: JwtPayload | string
 ): payload is IUserPayload => {

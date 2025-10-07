@@ -40,6 +40,7 @@ export const register = async (
       "1d",
       process.env.ACCESS_TOKEN_SECRET!
     );
+
     const refreshToken = generateToken(
       tokenPayload,
       "30d",
@@ -113,13 +114,13 @@ export const login = async (
 
     res.json({
       message: "login success.",
-      accessToken,
       user: {
         _id: user._id,
         name: user.name,
         email: user.email,
         picture: user.picture,
         status: user.status,
+        accessToken,
       },
     });
   } catch (err) {
