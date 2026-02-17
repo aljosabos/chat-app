@@ -30,12 +30,11 @@ export const authMiddleware = async (
       throw new createHttpError.Unauthorized("Invalid or expired access token");
     }
 
-    if (decoded) {
-      const user = await User.findById(decoded.userId);
-      if (!user) {
-        throw new createHttpError.Unauthorized("User not found");
-      }
+    if (!decoded || typeof decoded !== "object") {
+      throw new createHttpError.Unauthorized("Invalid token payload");
     }
+
+    req.user = decoded;
 
     next();
   } catch (err) {

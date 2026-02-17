@@ -103,4 +103,4 @@ app.use(
   }
 );
 
-export default app;
+export default app
