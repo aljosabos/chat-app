@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// hashing the password before the user is saved (register);
+// hashing the password before the user is registered
 userSchema.pre("save", async function (next) {
   try {
     if (this.isNew) {

@@ -5,6 +5,7 @@ import { findConversation } from "../utils/conversation.js";
 import { User } from "../models/userModel.js";
 import { Conversation } from "../models/conversationModel.js";
 
+// Get conversation between two users if found, or create a new one if its not found
 export const openConversation = async (
   req: Request,
   res: Response,
@@ -52,5 +53,29 @@ export const openConversation = async (
     }
   } catch (error) {
     next(error);
+  }
+};
+
+// Get all conversations from a specific user
+export const getUserConversations = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user?.userId;
+
+    const conversations = await Conversation.find({
+      users: { $elemMatch: { $eq: userId } },
+    }).populate([
+      { path: "users", select: "-password" },
+      {
+        path: "lastMessage",
+      },
+    ]);
+
+    res.json({ conversations });
+  } catch (err) {
+    next(err);
   }
 };
