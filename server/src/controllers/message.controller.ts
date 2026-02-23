@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
-import { logger } from "../configs/logger.js";
 import { Message } from "../models/messageModel.js";
 import { Conversation } from "../models/conversationModel.js";
+import mongoose from "mongoose";
 
 export const sendMessage = async (
   req: Request,
@@ -52,14 +52,27 @@ export const sendMessage = async (
     next(err);
   }
 };
-
 export const getMessages = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    res.json({ msg: "Get messages" });
+    const { conversation_id } = req.params;
+
+    if (!conversation_id) {
+      throw new createHttpError.BadRequest("You must provide conversation id");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(conversation_id)) {
+      throw new createHttpError.BadRequest("Invalid conversation id");
+    }
+
+    const messages = await Message.find({ conversation: conversation_id })
+      .sort({ createdAt: 1 })
+      .populate("sender", "name email picture status");
+
+    res.json({ messages });
   } catch (err) {
     next(err);
   }
