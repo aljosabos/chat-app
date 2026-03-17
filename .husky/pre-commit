@@ -1,3 +1,4 @@
+echo "PRE COMMIT RADI"
 set -e
 
 # Type-check za server
