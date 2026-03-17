@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "Hey there i am using chat app",
+      default: "Hey there i am using chat app.",
     },
 
     password: {
