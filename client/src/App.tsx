@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import ChatIcon from "@icons/Chat";
 
 function App() {
   const [fruits, setFruits] = useState([]);
@@ -19,8 +18,6 @@ function App() {
           <li key={fruit}>{fruit}</li>
         ))}
       </ul>
-
-      <ChatIcon />
 
       <div className="bg-red-100 p-6 rounded-lg shadow-lg max-w-sm text-center">
         <h2 className="text-2xl font-bold text-gray-800">Tailwind Card</h2>
