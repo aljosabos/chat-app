@@ -1,4 +1,8 @@
-export default function ChatIcon() {
+interface IChatIconProps {
+  className?: string;
+}
+
+export const ChatIcon = ({ className }: IChatIconProps) => {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -10,6 +14,8 @@ export default function ChatIcon() {
       y="0px"
       enableBackground="new 0 0 24 24"
       xmlSpace="preserve"
+      fill="currentColor"
+      className={className}
     >
       <path
         enableBackground="new"
@@ -17,4 +23,4 @@ export default function ChatIcon() {
       />
     </svg>
   );
-}
+};

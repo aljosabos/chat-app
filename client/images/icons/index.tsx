@@ -1,11 +1,11 @@
-import CommunityIcon from "./Community";
-import StoryIcon from "./Story";
-import ChatIcon from "./Chat";
+import { CommunityIcon } from "./Community";
+import { StoryIcon } from "./Story";
+import { ChatIcon } from "./Chat";
 import NotificationIcon from "./Notification";
 import ArrowIcon from "./Arrow";
 import CloseIcon from "./Close";
 import SearchIcon from "./Search";
-import DotsIcon from "./Dots";
+import { DotsIcon } from "./Dots";
 import FilterIcon from "./FilterIcon";
 import SeenIcon from "./Seen";
 import Logo from "./Logo";

@@ -1,14 +1,15 @@
 interface ICommunityProps {
   className?: string;
 }
-export default function CommunityIcon({ className }: ICommunityProps) {
+export const CommunityIcon = ({ className }: ICommunityProps) => {
   return (
     <svg
       viewBox="0 0 28 28"
       height={28}
       width={28}
       preserveAspectRatio="xMidYMid meet"
-      fill="none"
+      fill="currentColor"
+      className={className}
     >
       <path
         fillRule="evenodd"
@@ -18,4 +19,4 @@ export default function CommunityIcon({ className }: ICommunityProps) {
       />
     </svg>
   );
-}
+};

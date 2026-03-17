@@ -2,7 +2,7 @@ interface IStoryIconProps {
   className?: string;
   active?: boolean;
 }
-export default function StoryIcon({ className, active }: IStoryIconProps) {
+export const StoryIcon = ({ className, active }: IStoryIconProps) => {
   if (active) {
     return (
       <svg
@@ -16,6 +16,8 @@ export default function StoryIcon({ className, active }: IStoryIconProps) {
         y="0px"
         enableBackground="new 0 0 24 24"
         xmlSpace="preserve"
+        fill="currentColor"
+        className={className}
       >
         <path
           className={className}
@@ -40,6 +42,8 @@ export default function StoryIcon({ className, active }: IStoryIconProps) {
         y="0px"
         enableBackground="new 0 0 24 24"
         xmlSpace="preserve"
+        fill="currentColor"
+        className={className}
       >
         <path
           className={className}
@@ -48,4 +52,4 @@ export default function StoryIcon({ className, active }: IStoryIconProps) {
       </svg>
     );
   }
-}
+};
