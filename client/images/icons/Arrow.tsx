@@ -1,7 +1,7 @@
 interface IArrowIconProps {
   className?: string;
 }
-export default function ArrowIcon({ className }: IArrowIconProps) {
+export const ArrowIcon = ({ className }: IArrowIconProps) => {
   return (
     <svg
       viewBox="0 0 8 12"
@@ -14,6 +14,7 @@ export default function ArrowIcon({ className }: IArrowIconProps) {
       y="0px"
       enableBackground="new 0 0 8 12"
       xmlSpace="preserve"
+      fill="currentColor"
     >
       <path
         className={className}
@@ -21,4 +22,4 @@ export default function ArrowIcon({ className }: IArrowIconProps) {
       />
     </svg>
   );
-}
+};

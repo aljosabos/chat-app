@@ -1,3 +1,4 @@
-import { MessageBox } from "@components/MessageBox/MessageBox";
+import { MessageInput } from "@components/MessageInput/MessageInput";
+import { NotificationsToggle } from "./NotificationsToggle/NotificationsToggle";
 
-export { MessageBox };
+export { MessageInput, NotificationsToggle };

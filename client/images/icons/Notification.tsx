@@ -1,7 +1,7 @@
 interface INotificationIconProps {
   className?: string;
 }
-export default function NotificationIcon({ className }: INotificationIconProps) {
+export const NotificationIcon = ({ className }: INotificationIconProps) => {
   return (
     <svg
       viewBox="0 0 48 48"
@@ -13,6 +13,8 @@ export default function NotificationIcon({ className }: INotificationIconProps) 
       y="0px"
       enableBackground="new 0 0 48 48"
       xmlSpace="preserve"
+      fill="currentColor"
+      className={className}
     >
       <path
         className={className}
@@ -20,4 +22,4 @@ export default function NotificationIcon({ className }: INotificationIconProps) 
       />
     </svg>
   );
-}
+};
