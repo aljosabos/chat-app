@@ -1,7 +1,7 @@
 interface IFilterIconProps {
   className?: string;
 }
-export default function FilterIcon({ className }: IFilterIconProps) {
+export const FilterIcon = ({ className }: IFilterIconProps) => {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -13,6 +13,8 @@ export default function FilterIcon({ className }: IFilterIconProps) {
       y="0px"
       enableBackground="new 0 0 24 24"
       xmlSpace="preserve"
+      fill="currentColor"
+      className={className}
     >
       <path
         className={className}
@@ -20,4 +22,4 @@ export default function FilterIcon({ className }: IFilterIconProps) {
       />
     </svg>
   );
-}
+};

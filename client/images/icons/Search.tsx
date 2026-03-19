@@ -1,7 +1,7 @@
 interface ISearchIconProps {
   className?: string;
 }
-export default function SearchIcon({ className }: ISearchIconProps) {
+export const SearchIcon = ({ className }: ISearchIconProps) => {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -14,6 +14,7 @@ export default function SearchIcon({ className }: ISearchIconProps) {
       y="0px"
       enableBackground="new 0 0 24 24"
       xmlSpace="preserve"
+      fill="currentColor"
     >
       <path
         className={className}
@@ -21,4 +22,4 @@ export default function SearchIcon({ className }: ISearchIconProps) {
       />
     </svg>
   );
-}
+};

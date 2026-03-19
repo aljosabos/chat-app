@@ -35,3 +35,15 @@
   --color-green-3: #005c4b;
   --color-green-4: #025144;
 }
+
+/* Animations */
+
+.rotateAnimation {
+  animation: rotate 0.3s forwards;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(-90deg);
+  }
+}

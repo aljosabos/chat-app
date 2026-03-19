@@ -51,12 +51,6 @@ export const RegisterForm = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (registerStatus === "success") {
-  //     navigate("/");
-  //   }
-  // }, [registerStatus, navigate]);
-
   return (
     <div className="h-screen w-full flex items-center justify-center overflow-hidden">
       <div className="max-w-md p-10 dark:bg-dark-bg-2 rounded-xl">

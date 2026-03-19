@@ -1,7 +1,7 @@
 interface IReturnIconProps {
   className?: string;
 }
-export default function ReturnIcon({ className }: IReturnIconProps) {
+export const ReturnIcon = ({ className }: IReturnIconProps) => {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -13,6 +13,8 @@ export default function ReturnIcon({ className }: IReturnIconProps) {
       y="0px"
       enableBackground="new 0 0 24 24"
       xmlSpace="preserve"
+      fill="currentColor"
+      className={className}
     >
       <path
         className={className}
@@ -20,4 +22,4 @@ export default function ReturnIcon({ className }: IReturnIconProps) {
       />
     </svg>
   );
-}
+};

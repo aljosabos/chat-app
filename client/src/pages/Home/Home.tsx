@@ -1,4 +1,8 @@
-import { MessageInput, NotificationsToggle } from "@components/index";
+import {
+  ChatSearch,
+  MessageInput,
+  NotificationsToggle,
+} from "@components/index";
 
 export const Home = () => {
   return (
@@ -6,6 +10,7 @@ export const Home = () => {
       <div className="w-[500px]">
         <MessageInput />
         <NotificationsToggle />
+        <ChatSearch />
       </div>
     </div>
   );
