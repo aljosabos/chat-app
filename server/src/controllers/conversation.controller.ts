@@ -40,6 +40,7 @@ export const openConversation = async (
         name: receiver_user?.name,
         isGroup: false,
         users: [sender_id, receiver_id],
+        picture: receiver_user?.picture,
       };
 
       const new_conversation = await Conversation.create(data);
