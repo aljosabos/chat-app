@@ -2,31 +2,7 @@ import type { RootState } from "@/store";
 import type { ApiError } from "@/types";
 import type { LoginFormValues } from "@components/LoginForm/LoginForm.schema";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-interface UserState {
-  authStatus: "idle" | "pending" | "success" | "error";
-  error: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-    picture: string;
-    status: string;
-    accessToken: string;
-  };
-}
-
-interface RegisterUserResonse {
-  message: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-    picture: string;
-    status: string;
-    accessToken: string;
-  };
-}
+import type { RegisterUserResonse, UserState } from "./types";
 
 // Define the initial state using that type
 const initialState: UserState = {
