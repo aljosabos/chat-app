@@ -36,7 +36,7 @@ export const Input = <TData extends FieldValues>({
         type={type ?? "text"}
         placeholder={placeholder}
         className={cn(
-          "w-full text-base py-2 px-4 rounded-lg outline-none border border-gray-300 dark:border-dark-border-2 dark:placeholder:text-dark-text-2",
+          "w-full text-base py-2 px-4 rounded-lg outline-none border border-gray-300 dark:border-dark-border-2 placeholder:text-dark-text-4 text-dark-text-2",
           className
         )}
         autoComplete="off"
