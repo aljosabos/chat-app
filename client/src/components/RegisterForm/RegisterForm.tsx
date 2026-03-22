@@ -53,8 +53,8 @@ export const RegisterForm = () => {
 
   return (
     <div className="h-screen w-full flex items-center justify-center overflow-hidden">
-      <div className="max-w-md p-10 dark:bg-dark-bg-2 rounded-xl">
-        <div className="text-center dark:text-dark-text-1">
+      <div className="max-w-sm w-full p-10 dark:bg-dark-bg-2 rounded-xl">
+        <div className="text-center dark:text-dark-text-6">
           <h2 className="mt-6 text-3xl font-bold">Welcome</h2>
           <p className="mt-2 text-sm">Sign up</p>
         </div>
@@ -102,7 +102,7 @@ export const RegisterForm = () => {
             )}
           </button>
           <div className="text-sm">
-            <p className="flex flex-col items-center justify-center  text-center text-md dark:text-dark-text-1">
+            <p className="flex flex-col items-center justify-center  text-center text-md dark:text-dark-text-2">
               <span>Have an account?</span>
               <Link
                 to="/login"

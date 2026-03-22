@@ -38,9 +38,9 @@ export const FileUpload = ({ onFileSelect }: FileUploadProps) => {
   };
 
   return (
-    <div className="text-white text-sm mt-8 dark:bg-dark-bg-3 p-4 rounded-xl">
+    <div className="text-white text-sm mt-8 dark:bg-dark-6 p-4 rounded-xl">
       {!file ? (
-        <label htmlFor="picture" className="cursor-pointer">
+        <label htmlFor="picture" className="cursor-pointer w-full block p-1">
           Select image
         </label>
       ) : (
