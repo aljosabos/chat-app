@@ -10,7 +10,7 @@ export const MessageInput = () => {
       <img
         src={user.picture}
         alt={user.name}
-        className="h-full object-contain"
+        className="w-11 h-11 rounded-full"
       />
       <div className="flex gap-3 items-center">
         <CommunityIcon className="dark:fill-dark-svg-1" />
