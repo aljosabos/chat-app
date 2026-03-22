@@ -69,6 +69,7 @@ export const getConversations = createAsyncThunk<
     }
 
     const data = await response.json();
+
     return data;
   } catch {
     return rejectWithValue({
@@ -78,5 +79,8 @@ export const getConversations = createAsyncThunk<
 });
 
 export const { setActiveConversation } = chatSlice.actions;
+
+export const conversationsSelector = (state: RootState) =>
+  state.chat.conversations;
 
 export default chatSlice.reducer;

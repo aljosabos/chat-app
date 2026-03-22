@@ -9,8 +9,10 @@ export interface ChatState {
 }
 
 export interface Conversation {
+  _id: string;
   name: string;
   isGroup: boolean;
+  picture: string;
   users: User[];
   lastMessage: Message;
   admin: User;
