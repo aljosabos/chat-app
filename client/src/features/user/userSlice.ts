@@ -2,7 +2,7 @@ import type { RootState } from "@/store";
 import type { ApiError } from "@/types";
 import type { LoginFormValues } from "@components/LoginForm/LoginForm.schema";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { RegisterUserResonse, UserState } from "./types";
+import type { RegisterUserResonse, User, UserState } from "./types";
 
 // Define the initial state using that type
 const initialState: UserState = {
@@ -18,7 +18,7 @@ const initialState: UserState = {
   },
 };
 
-// thunks
+// ----- THUNKS ----- //
 export const registerUser = createAsyncThunk<
   RegisterUserResonse,
   FormData,
@@ -74,6 +74,41 @@ export const loginUser = createAsyncThunk<
   }
 });
 
+export const searchUser = createAsyncThunk<
+  User[],
+  { search: string },
+  { rejectValue: { error: ApiError }; state: RootState }
+>("user/search", async ({ search }, { rejectWithValue, getState }) => {
+  try {
+    const state = getState();
+    const token = state.user.user.accessToken;
+
+    const url = `${
+      import.meta.env.VITE_API_URL
+    }/api/v1/user?search=${encodeURIComponent(search)}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return rejectWithValue(errorData);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch {
+    return rejectWithValue({
+      error: { status: 500, message: "Network error" },
+    });
+  }
+});
+
+// ---- SLICE ---- //
 export const userSlice = createSlice({
   name: "user",
   initialState,

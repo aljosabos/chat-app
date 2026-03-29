@@ -1,10 +1,47 @@
-import { SearchIcon } from "@icons/Search";
-import { Input } from "@components/index";
-import { FilterIcon, ReturnIcon } from "@icons/index";
-import { useState } from "react";
+import { useAppDispatch } from "@/hooks/redux";
+import { useDebounce } from "@/hooks/useDebounce";
+import { Input } from "@components/Input/Input";
+import { type User } from "@features/user/types";
+import { searchUser } from "@features/user/userSlice";
+import { FilterIcon, ReturnIcon, SearchIcon } from "@icons/index";
+import { useCallback, useEffect, useState } from "react";
 
 export const ChatSearch = () => {
+  const dispatch = useAppDispatch();
+
   const [isFocused, setIsFocused] = useState(false);
+  const [search, setSearch] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+
+  const debouncedSearch = useDebounce(search);
+
+  const handleSearchUser = useCallback(
+    async (search: string) => {
+      try {
+        const data = await dispatch(searchUser({ search })).unwrap();
+        return data;
+      } catch (err) {
+        console.error("Search error:", err);
+      }
+    },
+    [dispatch]
+  );
+
+  useEffect(() => {
+    if (!debouncedSearch.trim()) {
+      setUsers([]);
+      return;
+    }
+
+    const fetchUsers = async () => {
+      const users = await handleSearchUser(debouncedSearch.trim());
+      if (users) setUsers(users);
+    };
+
+    fetchUsers();
+  }, [debouncedSearch, handleSearchUser]);
+
+  console.log(users);
 
   return (
     <div className="flex items-center justify-between p-3">
@@ -14,8 +51,11 @@ export const ChatSearch = () => {
         ) : (
           <SearchIcon className="dark:fill-dark-svg-2 mr-2" />
         )}
+
         <Input
           name="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           placeholder="Search or start a new chat"
           className="border-none"
           onFocus={() => setIsFocused(true)}
