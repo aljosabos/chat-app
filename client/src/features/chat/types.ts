@@ -16,12 +16,14 @@ export interface Conversation {
   users: User[];
   lastMessage: Message;
   admin: User;
+  createdAt: string;
 }
 
 export interface Message {
   sender: User;
   message: string;
   conversation: Conversation;
+  createdAt: string;
 }
 
 export interface ConversationsResponse {
