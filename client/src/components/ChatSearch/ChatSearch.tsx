@@ -1,47 +1,47 @@
-import { useAppDispatch } from "@/hooks/redux";
-import { useDebounce } from "@/hooks/useDebounce";
-import { Input } from "@components/Input/Input";
-import { type User } from "@features/user/types";
-import { searchUser } from "@features/user/userSlice";
-import { FilterIcon, ReturnIcon, SearchIcon } from "@icons/index";
-import { useCallback, useEffect, useState } from "react";
 
-export const ChatSearch = () => {
-  const dispatch = useAppDispatch();
+import { Input } from "@components/Input/Input";
+import { FilterIcon, ReturnIcon, SearchIcon } from "@icons/index";
+import { useState } from "react";
+
+interface IChatSearchProps {
+  search: string;
+  setSearchContacts: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const ChatSearch = ({ search, setSearchContacts }: IChatSearchProps) => {
+  // const dispatch = useAppDispatch();
 
   const [isFocused, setIsFocused] = useState(false);
-  const [search, setSearch] = useState("");
-  const [users, setUsers] = useState<User[]>([]);
+  // const [search, setSearch] = useState("");
+  // const [users, setUsers] = useState<User[]>([]);
 
-  const debouncedSearch = useDebounce(search);
+  // const debouncedSearch = useDebounce(search);
 
-  const handleSearchUser = useCallback(
-    async (search: string) => {
-      try {
-        const data = await dispatch(searchUser({ search })).unwrap();
-        return data;
-      } catch (err) {
-        console.error("Search error:", err);
-      }
-    },
-    [dispatch]
-  );
+  // const handleSearchUser = useCallback(
+  //   async (search: string) => {
+  //     try {
+  //       const data = await dispatch(searchUser({ search })).unwrap();
+  //       return data;
+  //     } catch (err) {
+  //       console.error("Search error:", err);
+  //     }
+  //   },
+  //   [dispatch]
+  // );
 
-  useEffect(() => {
-    if (!debouncedSearch.trim()) {
-      setUsers([]);
-      return;
-    }
+  // useEffect(() => {
+  //   if (!debouncedSearch.trim()) {
+  //     setUsers([]);
+  //     return;
+  //   }
 
-    const fetchUsers = async () => {
-      const users = await handleSearchUser(debouncedSearch.trim());
-      if (users) setUsers(users);
-    };
+  //   const fetchUsers = async () => {
+  //     const users = await handleSearchUser(debouncedSearch.trim());
+  //     if (users) setUsers(users);
+  //   };
 
-    fetchUsers();
-  }, [debouncedSearch, handleSearchUser]);
-
-  console.log(users);
+  //   fetchUsers();
+  // }, [debouncedSearch, handleSearchUser]);
 
   return (
     <div className="flex items-center justify-between p-3">
@@ -55,7 +55,7 @@ export const ChatSearch = () => {
         <Input
           name="search"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setSearchContacts(e.target.value)}
           placeholder="Search or start a new chat"
           className="border-none"
           onFocus={() => setIsFocused(true)}

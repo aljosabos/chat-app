@@ -4,6 +4,7 @@ import { ChatSearch } from "./ChatSearch/ChatSearch";
 import { Input } from "./Input/Input";
 import { Conversations } from "./Conversations/Conversations";
 import { Conversation } from "./Conversation/Conversation";
+import { Contact } from "./Contact/Contact";
 
 export {
   MessageInput,
@@ -12,4 +13,5 @@ export {
   Input,
   Conversations,
   Conversation,
+  Contact,
 };
