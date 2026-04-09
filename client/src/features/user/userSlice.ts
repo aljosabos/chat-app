@@ -74,40 +74,6 @@ export const loginUser = createAsyncThunk<
   }
 });
 
-/* export const searchUser = createAsyncThunk<
-  User[],
-  { search: string },
-  { rejectValue: { error: ApiError }; state: RootState }
->("user/search", async ({ search }, { rejectWithValue, getState }) => {
-  try {
-    const state = getState();
-    const token = state.user.user.accessToken;
-
-    const url = `${
-      import.meta.env.VITE_API_URL
-    }/api/v1/user?search=${encodeURIComponent(search)}`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return rejectWithValue(errorData);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch {
-    return rejectWithValue({
-      error: { status: 500, message: "Network error" },
-    });
-  }
-}); */
-
 // ---- SLICE ---- //
 export const userSlice = createSlice({
   name: "user",

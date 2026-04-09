@@ -1,7 +1,8 @@
 interface IDotsIconProps {
   className?: string;
+  onClick?: () => void;
 }
-export const DotsIcon = ({ className }: IDotsIconProps) => {
+export const DotsIcon = ({ className, onClick }: IDotsIconProps) => {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -15,6 +16,7 @@ export const DotsIcon = ({ className }: IDotsIconProps) => {
       xmlSpace="preserve"
       fill="currentColor"
       className={className}
+      onClick={onClick}
     >
       <path
         className={className}

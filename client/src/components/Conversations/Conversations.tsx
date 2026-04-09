@@ -6,7 +6,7 @@ interface ConversationsProps {
 }
 export const Conversations = ({ conversations }: ConversationsProps) => {
   return (
-    <div className=" h-full overflow-y-auto scrollbar text-white">
+    <div className="h-full overflow-y-auto scrollbar text-white">
       {conversations.map((conversation) => (
         <Conversation key={conversation._id} conversation={conversation} />
       ))}

@@ -5,7 +5,7 @@ import {
   ChatSearch,
   Contact,
   Conversations,
-  MessageInput,
+  Header,
   NotificationsToggle,
 } from "@components/index";
 import {
@@ -56,7 +56,7 @@ export const Home = () => {
     <div className="h-screen dark:bg-dark-1 flex">
       <div className="w-[500px] flex flex-col">
         <div className="flex-shrink-0">
-          <MessageInput />
+          <Header />
           <NotificationsToggle />
           <ChatSearch search={search} setSearchContacts={setSearch} />
         </div>

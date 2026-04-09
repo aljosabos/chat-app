@@ -14,8 +14,8 @@ export const Conversation = ({ conversation }: ConversationProps) => {
           className="w-11 h-11 rounded-full"
         />
         <div className="flex flex-col">
-          <h6 className="font-bold leading-5">{conversation.name}</h6>
-          <p className="dark:text-dark-text-2">
+          <h6 className="font-bold leading-6">{conversation.name}</h6>
+          <p className="dark:text-dark-text-2 text-sm">
             {conversation.lastMessage?.message}
           </p>
         </div>
