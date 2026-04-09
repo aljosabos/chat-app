@@ -1,4 +1,3 @@
-
 import { Input } from "@components/Input/Input";
 import { FilterIcon, ReturnIcon, SearchIcon } from "@icons/index";
 import { useState } from "react";
@@ -9,39 +8,7 @@ interface IChatSearchProps {
 }
 
 export const ChatSearch = ({ search, setSearchContacts }: IChatSearchProps) => {
-  // const dispatch = useAppDispatch();
-
   const [isFocused, setIsFocused] = useState(false);
-  // const [search, setSearch] = useState("");
-  // const [users, setUsers] = useState<User[]>([]);
-
-  // const debouncedSearch = useDebounce(search);
-
-  // const handleSearchUser = useCallback(
-  //   async (search: string) => {
-  //     try {
-  //       const data = await dispatch(searchUser({ search })).unwrap();
-  //       return data;
-  //     } catch (err) {
-  //       console.error("Search error:", err);
-  //     }
-  //   },
-  //   [dispatch]
-  // );
-
-  // useEffect(() => {
-  //   if (!debouncedSearch.trim()) {
-  //     setUsers([]);
-  //     return;
-  //   }
-
-  //   const fetchUsers = async () => {
-  //     const users = await handleSearchUser(debouncedSearch.trim());
-  //     if (users) setUsers(users);
-  //   };
-
-  //   fetchUsers();
-  // }, [debouncedSearch, handleSearchUser]);
 
   return (
     <div className="flex items-center justify-between p-3">

@@ -29,6 +29,7 @@
       "@utils/*": ["src/utils/*"],
       "@pages/*": ["src/pages/*"],
       "@features/*": ["src/features/*"],
+      "@api/*": ["src/api/*"],
       "@/*": ["src/*"]
     }
   },

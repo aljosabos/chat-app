@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useDebounce } from "@/hooks/useDebounce";
+import { searchUser } from "@api/user";
 import {
   ChatSearch,
   Contact,
@@ -12,7 +13,7 @@ import {
   getConversations,
 } from "@features/chat/chatSlice";
 import type { User } from "@features/user/types";
-import { searchUser, userSelector } from "@features/user/userSlice";
+import { userSelector } from "@features/user/userSlice";
 import { useCallback, useEffect, useState } from "react";
 
 export const Home = () => {
@@ -21,24 +22,17 @@ export const Home = () => {
   const [search, setSearch] = useState("");
   const [contacts, setContacts] = useState<User[]>([]);
 
-  console.log(user);
-
   const debouncedSearch = useDebounce(search);
-
   const conversations = useAppSelector(conversationsSelector);
-  console.log("contacts:", contacts);
 
-  const handleSearchUser = useCallback(
-    async (search: string) => {
-      try {
-        const data = await dispatch(searchUser({ search })).unwrap();
-        return data;
-      } catch (err) {
-        console.error("Search error:", err);
-      }
-    },
-    [dispatch]
-  );
+  const handleSearchUser = useCallback(async (search: string) => {
+    try {
+      const data = await searchUser(search);
+      return data;
+    } catch (err) {
+      console.error("Search error:", err);
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(getConversations());
@@ -69,7 +63,9 @@ export const Home = () => {
 
         <div className="min-h-0 flex-1">
           {contacts.length > 0 ? (
-            contacts?.map((contact) => <Contact {...contact} />)
+            contacts?.map((contact) => (
+              <Contact {...contact} key={contact._id} />
+            ))
           ) : (
             <Conversations conversations={conversations} />
           )}

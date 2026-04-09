@@ -2,7 +2,7 @@ import type { RootState } from "@/store";
 import type { ApiError } from "@/types";
 import type { LoginFormValues } from "@components/LoginForm/LoginForm.schema";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { RegisterUserResonse, User, UserState } from "./types";
+import type { RegisterUserResonse, UserState } from "./types";
 
 // Define the initial state using that type
 const initialState: UserState = {
@@ -74,7 +74,7 @@ export const loginUser = createAsyncThunk<
   }
 });
 
-export const searchUser = createAsyncThunk<
+/* export const searchUser = createAsyncThunk<
   User[],
   { search: string },
   { rejectValue: { error: ApiError }; state: RootState }
@@ -106,7 +106,7 @@ export const searchUser = createAsyncThunk<
       error: { status: 500, message: "Network error" },
     });
   }
-});
+}); */
 
 // ---- SLICE ---- //
 export const userSlice = createSlice({
