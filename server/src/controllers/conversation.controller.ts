@@ -15,6 +15,7 @@ export const openConversation = async (
     const sender_id = req?.user?.userId;
     const receiver_id = req.body.receiver_id;
 
+    console.log("BODY:", req.body);
     // check if receiver_id is provided
     if (!receiver_id) {
       logger.error(
@@ -31,7 +32,8 @@ export const openConversation = async (
     );
 
     if (existing_conversation) {
-      res.json({ existing_conversation });
+      const parsed_conversation = existing_conversation.toObject();
+      res.json({ ...parsed_conversation });
     } else {
       // we need to create new conversation
       const receiver_user = await User.findById(receiver_id);
@@ -50,7 +52,9 @@ export const openConversation = async (
         { path: "lastMessage" },
       ]);
 
-      res.json({ new_conversation });
+      const parsed_conversation = new_conversation.toObject();
+
+      res.json({ ...parsed_conversation });
     }
   } catch (error) {
     next(error);

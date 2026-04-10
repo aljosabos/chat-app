@@ -1,7 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { type ConversationsResponse } from "./types";
-import type { ApiError } from "@/types";
+import { createSlice } from "@reduxjs/toolkit";
+
 import type { ChatState, Conversation } from "./types";
+import type { RootState } from "@/store";
+import { getConversations, openConversation } from "./thunks";
 
 const initialState: ChatState = {
   status: "",
@@ -40,42 +41,28 @@ export const chatSlice = createSlice({
       state.conversations =
         action.payload?.conversations || initialState.conversations;
     });
+
+    /**** OPEN CONVERSATION  ****/
+    builder.addCase(openConversation.pending, (state) => {
+      state.status = "pending";
+      state.error = "";
+    });
+
+    builder.addCase(openConversation.rejected, (state, action) => {
+      state.status = "error";
+      if (action.payload) {
+        state.error = action.payload.error.message;
+      } else {
+        state.error = action.error.message || "Unknown error";
+      }
+    });
+
+    builder.addCase(openConversation.fulfilled, (state, action) => {
+      state.status = "success";
+      state.error = "";
+      state.activeConversation = action.payload;
+    });
   },
-});
-
-// thunks
-import type { RootState } from "@/store";
-
-export const getConversations = createAsyncThunk<
-  ConversationsResponse,
-  void,
-  { rejectValue: { error: ApiError }; state: RootState }
->("conversations/get", async (_, { rejectWithValue, getState }) => {
-  try {
-    const state = getState();
-    const token = state.user.user.accessToken;
-
-    const url = `${import.meta.env.VITE_API_URL}/api/v1/conversation`;
-
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return rejectWithValue(errorData);
-    }
-
-    const data = await response.json();
-
-    return data;
-  } catch {
-    return rejectWithValue({
-      error: { status: 500, message: "Network error" },
-    });
-  }
 });
 
 export const { setActiveConversation } = chatSlice.actions;

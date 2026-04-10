@@ -1,12 +1,29 @@
+import { useAppDispatch } from "@/hooks/redux";
+import { openConversation } from "@features/chat/thunks";
 import type { Conversation as ConversationType } from "@features/chat/types";
 import { formatDate } from "@utils/date";
+import { useCallback } from "react";
 
 interface ConversationProps {
   conversation: ConversationType;
 }
 export const Conversation = ({ conversation }: ConversationProps) => {
+  const dispatch = useAppDispatch();
+  const receiver_id = conversation.users[1]._id;
+
+  const handleOpenConversation = useCallback(async () => {
+    try {
+      await dispatch(openConversation(receiver_id)).unwrap();
+    } catch (err) {
+      console.error(err);
+    }
+  }, [dispatch, receiver_id]);
+
   return (
-    <div className="flex items-end justify-between p-3 gap-x-3 hover:bg-dark-3 cursor-pointer border-b border-b-dark-5 mx-4">
+    <div
+      onClick={handleOpenConversation}
+      className="flex items-end justify-between p-3 gap-x-3 hover:bg-dark-3 cursor-pointer border-b border-b-dark-5 mx-4"
+    >
       {/* LEFT */}
       <div className="flex gap-x-3 flex-1 min-w-0">
         <img

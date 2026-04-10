@@ -1,3 +1,7 @@
+import { useAppDispatch } from "@/hooks/redux";
+import { openConversation } from "@features/chat/thunks";
+import { useCallback } from "react";
+
 interface ContactProps {
   _id: string;
   name: string;
@@ -7,8 +11,21 @@ interface ContactProps {
   accessToken: string;
 }
 export const Contact = (contact: ContactProps) => {
+  const dispatch = useAppDispatch();
+
+  const handleOpenConversation = useCallback(async () => {
+    try {
+      await dispatch(openConversation(contact._id)).unwrap();
+    } catch (err) {
+      console.error(err);
+    }
+  }, [dispatch, contact._id]);
+
   return (
-    <div className="flex items-end justify-between p-3 gap-x-3 hover:bg-dark-3 cursor-pointer">
+    <div
+      onClick={handleOpenConversation}
+      className="flex items-end justify-between p-3 gap-x-3 hover:bg-dark-3 cursor-pointer"
+    >
       <div className="flex gap-x-3">
         <img
           src={contact.picture}

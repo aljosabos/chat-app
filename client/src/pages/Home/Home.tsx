@@ -9,10 +9,7 @@ import {
   Header,
   NotificationsToggle,
 } from "@components/index";
-import {
-  conversationsSelector,
-  getConversations,
-} from "@features/chat/chatSlice";
+import { getConversations } from "@features/chat/thunks";
 import type { User } from "@features/user/types";
 import { userSelector } from "@features/user/userSlice";
 import { useCallback, useEffect, useState } from "react";
@@ -24,7 +21,11 @@ export const Home = () => {
   const [contacts, setContacts] = useState<User[]>([]);
 
   const debouncedSearch = useDebounce(search);
-  const conversations = useAppSelector(conversationsSelector);
+  const { conversations, activeConversation } = useAppSelector(
+    (state) => state.chat
+  );
+
+  console.log(activeConversation);
 
   const handleSearchUser = useCallback(async (search: string) => {
     try {
@@ -65,14 +66,17 @@ export const Home = () => {
         <div className="min-h-0 flex-1">
           {contacts.length > 0 ? (
             contacts?.map((contact) => (
-              <Contact {...contact} key={contact._id} />
+              <div>
+                <span className="m-4 text-green-3 text-sm">Contacts</span>
+                <Contact {...contact} key={contact._id} />
+              </div>
             ))
           ) : (
             <Conversations conversations={conversations} />
           )}
         </div>
       </div>
-        <ChatPlaceholder />
+      {!activeConversation._id && <ChatPlaceholder />}
     </div>
   );
 };
