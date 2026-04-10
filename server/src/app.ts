@@ -33,7 +33,7 @@ const app = express();
 //cors
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://chat-app-bqeo.onrender.com"],
   })
 );
 
@@ -103,4 +103,4 @@ app.use(
   }
 );
 
-export default app
+export default app;
