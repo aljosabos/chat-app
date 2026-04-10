@@ -2,6 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useDebounce } from "@/hooks/useDebounce";
 import { searchUser } from "@api/user";
 import {
+  ChatPlaceholder,
   ChatSearch,
   Contact,
   Conversations,
@@ -54,7 +55,7 @@ export const Home = () => {
 
   return (
     <div className="h-screen dark:bg-dark-1 flex">
-      <div className="w-[500px] flex flex-col">
+      <div className="w-[500px] flex-col">
         <div className="flex-shrink-0">
           <Header />
           <NotificationsToggle />
@@ -71,6 +72,7 @@ export const Home = () => {
           )}
         </div>
       </div>
+        <ChatPlaceholder />
     </div>
   );
 };
