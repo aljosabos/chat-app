@@ -13,7 +13,7 @@ export const ChatSearch = ({ search, setSearchContacts }: IChatSearchProps) => {
   return (
     <div className="flex items-center justify-between p-3">
       <div className="flex items-center bg-gray-100 dark:bg-dark-2 rounded-lg px-4 py-1">
-        {isFocused ? (
+        {isFocused && search ? (
           <ReturnIcon className="dark:fill-green-1 rotateAnimation" />
         ) : (
           <SearchIcon className="dark:fill-dark-svg-2 mr-2" />

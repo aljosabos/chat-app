@@ -16,7 +16,11 @@ export const searchUsers = async (
       throw new createHttpError.BadGateway("No search query found");
     }
 
+    const currentUserId = req.user?.userId;
+
+    //search for all the users except the current logged in user
     const users = await User.find({
+      _id: { $ne: currentUserId },
       $or: [
         { name: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } },
