@@ -2,6 +2,8 @@ import type { RootState } from "@/store";
 import type { ApiError } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { ConversationsResponse, Conversation } from "./types";
+import { apiFetch } from "@utils/api";
+import { isApiError } from "@/helpers";
 
 // get all conversations of current user
 export const getConversations = createAsyncThunk<
@@ -13,26 +15,19 @@ export const getConversations = createAsyncThunk<
     const state = getState();
     const token = state.user.user.accessToken;
 
-    const url = `${import.meta.env.VITE_API_URL}/api/v1/conversation`;
-
-    const response = await fetch(url, {
+    const data = await apiFetch("conversation", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      return rejectWithValue(errorData);
-    }
-
-    const data = await response.json();
-
     return data;
-  } catch {
-    return rejectWithValue({
-      error: { status: 500, message: "Network error" },
-    });
+  } catch (err) {
+    const error = isApiError(err)
+      ? err
+      : { status: 500, message: "Network error" };
+
+    return rejectWithValue({ error });
   }
 });
 
@@ -48,29 +43,21 @@ export const openConversation = createAsyncThunk<
       const state = getState();
       const token = state.user.user.accessToken;
 
-      const url = `${import.meta.env.VITE_API_URL}/api/v1/conversation`;
-
-      const response = await fetch(url, {
+      const data = await apiFetch("conversation", {
         method: "POST",
         body: JSON.stringify({ receiver_id }),
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        return rejectWithValue(errorData);
-      }
-
-      const data = await response.json();
-
       return data;
-    } catch {
-      return rejectWithValue({
-        error: { status: 500, message: "Network error" },
-      });
+    } catch (err) {
+      const error = isApiError(err)
+        ? err
+        : { status: 500, message: "Network error" };
+
+      return rejectWithValue({ error });
     }
   }
 );

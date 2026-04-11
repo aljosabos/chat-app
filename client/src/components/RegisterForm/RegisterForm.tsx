@@ -5,9 +5,9 @@ import { Input } from "../Input/Input";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { PulseLoader } from "react-spinners";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "@features/user/userSlice";
 import { useState } from "react";
 import { FileUpload } from "@components/FileUpload/FileUpload";
+import { registerUser } from "@features/user/thunks";
 
 export const RegisterForm = () => {
   const navigate = useNavigate();

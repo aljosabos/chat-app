@@ -1,4 +1,4 @@
-import { cn } from "@/utils/lib/cn";
+import { cn } from "@utils/cn";
 import type { FieldValues, UseFormRegister, Path } from "react-hook-form";
 
 interface IInputProps<TData extends FieldValues>

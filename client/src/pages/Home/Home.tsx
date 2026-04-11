@@ -25,8 +25,6 @@ export const Home = () => {
     (state) => state.chat
   );
 
-  console.log(activeConversation);
-
   const handleSearchUser = useCallback(async (search: string) => {
     try {
       const data = await searchUser(search);

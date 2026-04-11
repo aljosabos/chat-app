@@ -5,7 +5,7 @@ import { Input } from "../Input/Input";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { PulseLoader } from "react-spinners";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "@features/user/userSlice";
+import { loginUser } from "@features/user/thunks";
 
 export const LoginForm = () => {
   const navigate = useNavigate();

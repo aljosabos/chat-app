@@ -1,10 +1,10 @@
 import type { ApiError } from "./types";
 
-export const isApiError = (error: unknown): error is ApiError => {
+export const isApiError = (err: unknown): err is ApiError => {
   return (
-    typeof error === "object" &&
-    error !== null &&
-    "status" in error &&
-    "message" in error
+    typeof err === "object" &&
+    err !== null &&
+    "status" in err &&
+    "message" in err
   );
 };

@@ -1,8 +1,7 @@
 import type { RootState } from "@/store";
-import type { ApiError } from "@/types";
-import type { LoginFormValues } from "@components/LoginForm/LoginForm.schema";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { RegisterUserResonse, UserState } from "./types";
+import { createSlice } from "@reduxjs/toolkit";
+import type { UserState } from "./types";
+import { registerUser, loginUser } from "./thunks";
 
 // Define the initial state using that type
 const initialState: UserState = {
@@ -18,63 +17,6 @@ const initialState: UserState = {
   },
 };
 
-// ----- THUNKS ----- //
-export const registerUser = createAsyncThunk<
-  RegisterUserResonse,
-  FormData,
-  { rejectValue: { error: ApiError } }
->("auth/register", async (formData, { rejectWithValue }) => {
-  try {
-    const url = `${import.meta.env.VITE_API_URL}/api/v1/auth/register`;
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return rejectWithValue(errorData);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch {
-    return rejectWithValue({
-      error: { status: 500, message: "Network error" },
-    });
-  }
-});
-
-export const loginUser = createAsyncThunk<
-  RegisterUserResonse,
-  LoginFormValues,
-  { rejectValue: { error: ApiError } }
->("auth/login", async (fields, { rejectWithValue }) => {
-  try {
-    const url = `${import.meta.env.VITE_API_URL}/api/v1/auth/login`;
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({ ...fields }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return rejectWithValue(errorData);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch {
-    return rejectWithValue({
-      error: { status: 500, message: "Network error" },
-    });
-  }
-});
-
-// ---- SLICE ---- //
 export const userSlice = createSlice({
   name: "user",
   initialState,

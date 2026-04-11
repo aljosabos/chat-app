@@ -1,24 +1,24 @@
-// api/userApi.ts
-
 import { type User } from "@/features/user/types";
-import { authFetch } from "./client";
+import { apiFetch } from "@utils/api";
+import { store } from "@/store";
+import { isApiError } from "@/helpers";
 
-type ApiError = {
-  status: number;
-  message: string;
-};
-
+// api for user search outside the redux flow
 export const searchUser = async (search: string): Promise<User[]> => {
-  const url = `${
-    import.meta.env.VITE_API_URL
-  }/api/v1/user?search=${encodeURIComponent(search)}`;
+  const state = store.getState();
+  const token = state.user.user.accessToken;
 
-  const response = await authFetch(url);
+  const url = `user?search=${encodeURIComponent(search)}`;
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw errorData as { error: ApiError };
+  try {
+    const data = await apiFetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return data;
+  } catch (err) {
+    throw isApiError(err) ? err : { status: 500, message: "Network error" };
   }
-
-  return response.json();
 };
