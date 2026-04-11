@@ -1,13 +1,16 @@
 import { getErrorMessage } from "@utils/error";
 
 export const apiFetch = async (url: string, options?: RequestInit) => {
+  //remove backslash from url parameter if passed accidentally
   const parsedUrl = url.startsWith("/") ? url.slice(1) : url;
+  
+  const isFormData = options?.body instanceof FormData;
 
   try {
     const response = await fetch(`/api/v1/${parsedUrl}`, {
       ...options,
       headers: {
-        "Content-Type": "application/json",
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
         ...(options?.headers || {}),
       },
     });

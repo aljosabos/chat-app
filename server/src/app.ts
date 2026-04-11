@@ -7,7 +7,6 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import cookieParser from "cookie-parser";
 import compression from "compression";
-import fileUpload from "express-fileupload";
 import cors from "cors";
 import { Error } from "mongoose";
 import createHttpError from "http-errors";
@@ -52,14 +51,22 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-//helmet
-app.use(helmet());
-
+//helmet configuration to work with cloudinary in production
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+      },
+    },
+  })
+);
 //parse JSON request body
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 //parse URL-encoded data (npr. iz HTML formi)
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 //sanitize request data
 app.use(mongoSanitize());
