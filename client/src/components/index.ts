@@ -7,6 +7,7 @@ import { Conversation } from "./Conversation/Conversation";
 import { Contact } from "./Contact/Contact";
 import { UserMenu } from "./UserMenu/UserMenu";
 import { ChatPlaceholder } from "./ChatPlaceholder/ChatPlaceholder";
+import { Chat } from "./Chat/Chat";
 
 export {
   Header,
@@ -18,4 +19,5 @@ export {
   Contact,
   UserMenu,
   ChatPlaceholder,
+  Chat,
 };

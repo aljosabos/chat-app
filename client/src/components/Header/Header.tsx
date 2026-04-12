@@ -17,7 +17,7 @@ export const Header = () => {
   useClickOutside(menuRef, closeMenu);
 
   return (
-    <div className="dark:bg-dark-2 h-[50px] p-1 flex justify-between items-center px-3">
+    <div className="dark:bg-dark-4 h-[50px] flex justify-between items-center px-3">
       <img
         src={user.picture}
         alt={user.name}

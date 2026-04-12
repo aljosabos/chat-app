@@ -2,7 +2,7 @@ import Logo from "@icons/Logo";
 
 export const ChatPlaceholder = () => {
   return (
-    <div className="dark:bg-dark-4 h-full w-full border-b-[6px] border-b-green-2 flex flex-col justify-center items-center">
+    <div className="dark:bg-dark-1 h-full w-full border-l dark:border-l-dark-border-2 border-b-[6px] border-b-green-2 flex flex-col justify-center items-center">
       <Logo />
 
       <div className="flex flex-col items-center justify-center">

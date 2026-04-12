@@ -36,7 +36,9 @@ export const Conversation = ({ conversation }: ConversationProps) => {
           <h6 className="font-bold leading-6 truncate">{conversation.name}</h6>
 
           <p className="dark:text-dark-text-2 text-sm truncate">
-            {conversation.lastMessage?.message}
+            {conversation.lastMessage?.message.length > 25
+              ? `${conversation.lastMessage?.message.substring(0, 25)}`
+              : conversation.lastMessage.message}
           </p>
         </div>
       </div>
@@ -44,7 +46,9 @@ export const Conversation = ({ conversation }: ConversationProps) => {
       {/* RIGHT */}
       <div className="flex text-xs flex-shrink-0">
         <span className="dark:text-dark-text-2 mb-0.5 whitespace-nowrap">
-          {formatDate(conversation.lastMessage.createdAt)}
+          {conversation.lastMessage.createdAt
+            ? formatDate(conversation.lastMessage.createdAt)
+            : ""}
         </span>
       </div>
     </div>
