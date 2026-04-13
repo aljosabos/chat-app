@@ -2,13 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import type { ChatState, Conversation } from "./types";
 import type { RootState } from "@/store";
-import { getConversations, openConversation } from "./thunks";
+import {
+  getConversationMessages,
+  getConversations,
+  openConversation,
+} from "./thunks";
 
 const initialState: ChatState = {
   status: "",
   error: "",
   conversations: [],
   activeConversation: {} as Conversation,
+  messages: [],
   notifications: [],
 };
 
@@ -61,6 +66,27 @@ export const chatSlice = createSlice({
       state.status = "success";
       state.error = "";
       state.activeConversation = action.payload;
+    });
+
+    /**** GET CONVERSATION MESSAGES  ****/
+    builder.addCase(getConversationMessages.pending, (state) => {
+      state.status = "pending";
+      state.error = "";
+    });
+
+    builder.addCase(getConversationMessages.rejected, (state, action) => {
+      state.status = "error";
+      if (action.payload) {
+        state.error = action.payload.error.message;
+      } else {
+        state.error = action.error.message || "Unknown error";
+      }
+    });
+
+    builder.addCase(getConversationMessages.fulfilled, (state, action) => {
+      state.status = "success";
+      state.error = "";
+      state.messages = action.payload;
     });
   },
 });

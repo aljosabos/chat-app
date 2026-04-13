@@ -7,7 +7,6 @@ export const ChatHeader = () => {
     (state) => state.chat.activeConversation
   );
 
-  console.log(name);
   return (
     <div className="h-[50px] dark:bg-dark-2 shrink-0 px-4 py-1 flex justify-between items-center">
       {/* Left */}

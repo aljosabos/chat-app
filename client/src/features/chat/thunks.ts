@@ -1,7 +1,7 @@
 import type { RootState } from "@/store";
 import type { ApiError } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { ConversationsResponse, Conversation } from "./types";
+import type { ConversationsResponse, Conversation, Message } from "./types";
 import { apiFetch } from "@utils/api";
 import { isApiError } from "@/helpers";
 
@@ -61,3 +61,31 @@ export const openConversation = createAsyncThunk<
     }
   }
 );
+
+export const getConversationMessages = createAsyncThunk<
+  Message[],
+  void,
+  { rejectValue: { error: ApiError }; state: RootState }
+>("conversations/messages", async (_, { rejectWithValue, getState }) => {
+  try {
+    const state = getState();
+    const token = state.user.user.accessToken;
+    const conversationId = state.chat.activeConversation._id;
+
+    const url = `message/${conversationId}`;
+
+    const data = await apiFetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return data;
+  } catch (err) {
+    const error = isApiError(err)
+      ? err
+      : { status: 500, message: "Network error" };
+
+    return rejectWithValue({ error });
+  }
+});

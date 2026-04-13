@@ -5,6 +5,7 @@ export interface ChatState {
   error: string;
   conversations: Conversation[];
   activeConversation: Conversation;
+  messages: Message[];
   notifications: string[];
 }
 
@@ -29,4 +30,3 @@ export interface Message {
 export interface ConversationsResponse {
   conversations: Conversation[];
 }
-
