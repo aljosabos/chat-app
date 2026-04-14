@@ -72,7 +72,7 @@ export const getMessages = async (
       .sort({ createdAt: 1 })
       .populate("sender", "name email picture status");
 
-    res.json({ messages });
+    res.json(messages);
   } catch (err) {
     next(err);
   }

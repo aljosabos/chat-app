@@ -64,28 +64,30 @@ export const openConversation = createAsyncThunk<
 
 export const getConversationMessages = createAsyncThunk<
   Message[],
-  void,
+  string,
   { rejectValue: { error: ApiError }; state: RootState }
->("conversations/messages", async (_, { rejectWithValue, getState }) => {
-  try {
-    const state = getState();
-    const token = state.user.user.accessToken;
-    const conversationId = state.chat.activeConversation._id;
+>(
+  "conversations/messages",
+  async (conversationId, { rejectWithValue, getState }) => {
+    try {
+      const state = getState();
+      const token = state.user.user.accessToken;
 
-    const url = `message/${conversationId}`;
+      const url = `message/${conversationId}`;
 
-    const data = await apiFetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const data = await apiFetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    return data;
-  } catch (err) {
-    const error = isApiError(err)
-      ? err
-      : { status: 500, message: "Network error" };
+      return data;
+    } catch (err) {
+      const error = isApiError(err)
+        ? err
+        : { status: 500, message: "Network error" };
 
-    return rejectWithValue({ error });
+      return rejectWithValue({ error });
+    }
   }
-});
+);
