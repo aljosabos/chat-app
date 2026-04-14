@@ -8,8 +8,9 @@ function EmojiIcon({ className }: IEmojiIconProps) {
       height="28"
       x="0"
       y="0"
-      className="ekdr8vow dhq51u3o"
+      className={className}
       viewBox="0 0 24 24"
+      fill="currentColor"
     >
       <path
         className={className}

@@ -25,7 +25,7 @@ export const ChatMessages = () => {
           key={msg.createdAt}
           message={msg.message}
           createdAt={msg.createdAt}
-          orientation={msg.sender._id === currentUserId ? "left" : "right"}
+          orientation={msg.sender._id === currentUserId ? "right" : "left"}
         />
       ))}
     </div>
