@@ -62,32 +62,78 @@ export const openConversation = createAsyncThunk<
   }
 );
 
+// get all messages from the specific user (conversation)
 export const getConversationMessages = createAsyncThunk<
   Message[],
   string,
   { rejectValue: { error: ApiError }; state: RootState }
->(
-  "conversations/messages",
-  async (conversationId, { rejectWithValue, getState }) => {
-    try {
-      const state = getState();
-      const token = state.user.user.accessToken;
+>("messages/get", async (conversationId, { rejectWithValue, getState }) => {
+  try {
+    const state = getState();
+    const token = state.user.user.accessToken;
 
-      const url = `message/${conversationId}`;
+    const url = `message/${conversationId}`;
 
-      const data = await apiFetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const data = await apiFetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      return data;
-    } catch (err) {
-      const error = isApiError(err)
-        ? err
-        : { status: 500, message: "Network error" };
+    return data;
+  } catch (err) {
+    const error = isApiError(err)
+      ? err
+      : { status: 500, message: "Network error" };
 
-      return rejectWithValue({ error });
-    }
+    return rejectWithValue({ error });
   }
-);
+});
+
+// send message to a user
+export const sendMessage = createAsyncThunk<
+  Message,
+  { conversationId: string; message: string; files?: File[] },
+  { rejectValue: { error: ApiError }; state: RootState }
+>("messages/send", async (values, { rejectWithValue, getState }) => {
+  try {
+    const state = getState();
+    const token = state.user.user.accessToken;
+
+    const hasFiles = values.files && values.files.length > 0;
+
+    const body = hasFiles
+      ? (() => {
+          const formData = new FormData();
+
+          formData.append("conversationId", values.conversationId);
+          formData.append("message", values.message);
+
+          values.files!.forEach((file) => {
+            formData.append("files", file);
+          });
+
+          return formData;
+        })()
+      : JSON.stringify({
+          conversationId: values.conversationId,
+          message: values.message,
+        });
+
+    const data = await apiFetch("message", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body,
+    });
+
+    return data;
+  } catch (err) {
+    const error = isApiError(err)
+      ? err
+      : { status: 500, message: "Network error" };
+
+    return rejectWithValue({ error });
+  }
+});

@@ -11,17 +11,18 @@ export const sendMessage = async (
 ) => {
   try {
     const sender = req.user?.userId;
-    const { message, conversation, files } = req.body;
+    const { message, conversationId } = req.body;
 
-    if (!sender || !message || !conversation) {
+    const files = req.files as Express.Multer.File[];
+
+    if (!sender || !message || !conversationId) {
       throw new createHttpError.BadRequest(
         "You must provide sender id, message and conversation"
       );
     }
 
-    // check does user belong to conversation
     const conv = await Conversation.findOne({
-      _id: conversation,
+      _id: conversationId,
       users: sender,
     });
 
@@ -31,27 +32,29 @@ export const sendMessage = async (
       );
     }
 
+    const fileUrls = files?.map((file) => file.originalname) || [];
+
     const newMessage = await Message.create({
       sender,
       message,
-      conversation,
-      files: files || [],
+      conversation: conversationId,
+      files: fileUrls,
     });
 
     await newMessage.populate([
       { path: "sender", select: "name email picture status" },
     ]);
 
-    // update lastMessage
-    await Conversation.findByIdAndUpdate(conversation, {
+    await Conversation.findByIdAndUpdate(conversationId, {
       lastMessage: newMessage._id,
     });
 
-    res.status(201).json({ msg: newMessage });
+    res.status(201).json(newMessage);
   } catch (err) {
     next(err);
   }
 };
+
 export const getMessages = async (
   req: Request,
   res: Response,

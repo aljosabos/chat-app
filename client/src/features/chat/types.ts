@@ -1,7 +1,7 @@
 import type { User } from "@features/user/types";
 
 export interface ChatState {
-  status: string;
+  status: "pending" | "error" | "success" | undefined;
   error: string;
   conversations: Conversation[];
   activeConversation: Conversation;
@@ -24,6 +24,7 @@ export interface Message {
   sender: User;
   message: string;
   conversation: Conversation;
+  files: File[];
   createdAt: string;
 }
 

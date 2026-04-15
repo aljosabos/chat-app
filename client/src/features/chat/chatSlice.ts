@@ -6,10 +6,11 @@ import {
   getConversationMessages,
   getConversations,
   openConversation,
+  sendMessage,
 } from "./thunks";
 
 const initialState: ChatState = {
-  status: "",
+  status: undefined,
   error: "",
   conversations: [],
   activeConversation: {} as Conversation,
@@ -87,6 +88,28 @@ export const chatSlice = createSlice({
       state.status = "success";
       state.error = "";
       state.messages = action.payload;
+    });
+
+    /**** SEND MESSAGE  ****/
+    builder.addCase(sendMessage.pending, (state) => {
+      state.status = "pending";
+      state.error = "";
+    });
+
+    builder.addCase(sendMessage.rejected, (state, action) => {
+      state.status = "error";
+      if (action.payload) {
+        state.error = action.payload.error.message;
+      } else {
+        state.error = action.error.message || "Unknown error";
+      }
+    });
+
+    builder.addCase(sendMessage.fulfilled, (state, action) => {
+      state.status = "success";
+      state.error = "";
+      state.messages = [...state.messages, action.payload];
+      state.activeConversation.lastMessage = action.payload;
     });
   },
 });
