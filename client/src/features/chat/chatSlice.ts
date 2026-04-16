@@ -111,19 +111,22 @@ export const chatSlice = createSlice({
       state.messages = [...state.messages, action.payload];
 
       // Message BE response contains the field 'conversation', which is actually a conversation id, not the conversation itself
-      const activeConversation = action.payload.conversation;
+      const activeConversationId = action.payload.conversation;
 
-      const updatedConversations = state.conversations.map((convo) => {
-        if (convo._id === activeConversation) {
-          return {
-            ...convo,
-            lastMessage: action.payload,
-          };
-        }
-        return convo;
-      });
+      const activeConversationIndex = state.conversations.findIndex(
+        (c) => c._id === activeConversationId
+      );
 
-      state.conversations = updatedConversations;
+      if (activeConversationIndex === -1) return;
+
+      const updatedConversation = {
+        ...state.conversations[activeConversationIndex],
+        lastMessage: action.payload,
+      };
+      // remove old stale
+      state.conversations.splice(activeConversationIndex, 1);
+      // put in the beginning
+      state.conversations.unshift(updatedConversation);
     });
   },
 });
