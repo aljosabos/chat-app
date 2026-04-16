@@ -1,7 +1,11 @@
 import type { RootState } from "@/store";
 import type { ApiError } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { ConversationsResponse, Conversation, Message } from "./types";
+import type {
+  ConversationsResponse,
+  Conversation,
+  Message,
+} from "./types";
 import { apiFetch } from "@utils/api";
 import { isApiError } from "@/helpers";
 

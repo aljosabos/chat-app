@@ -15,7 +15,6 @@ export const openConversation = async (
     const sender_id = req?.user?.userId;
     const receiver_id = req.body.receiver_id;
 
-    console.log("BODY:", req.body);
     // check if receiver_id is provided
     if (!receiver_id) {
       logger.error(

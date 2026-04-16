@@ -23,11 +23,19 @@ export interface Conversation {
 export interface Message {
   sender: User;
   message: string;
-  conversation: Conversation;
+  conversation: string;
   files: File[];
   createdAt: string;
 }
 
 export interface ConversationsResponse {
   conversations: Conversation[];
+}
+
+export interface MessageResponse {
+  sender: User;
+  message: Message;
+  conversation: string;
+  files: File[];
+  createdAt: string;
 }

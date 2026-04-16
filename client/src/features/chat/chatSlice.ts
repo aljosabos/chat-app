@@ -109,7 +109,21 @@ export const chatSlice = createSlice({
       state.status = "success";
       state.error = "";
       state.messages = [...state.messages, action.payload];
-      state.activeConversation.lastMessage = action.payload;
+
+      // Message BE response contains the field 'conversation', which is actually a conversation id, not the conversation itself
+      const activeConversation = action.payload.conversation;
+
+      const updatedConversations = state.conversations.map((convo) => {
+        if (convo._id === activeConversation) {
+          return {
+            ...convo,
+            lastMessage: action.payload,
+          };
+        }
+        return convo;
+      });
+
+      state.conversations = updatedConversations;
     });
   },
 });
