@@ -1,4 +1,4 @@
-import { useAppDispatch } from "@/hooks/redux";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { openConversation } from "@features/chat/thunks";
 import type { Conversation as ConversationType } from "@features/chat/types";
 import { formatDate } from "@utils/date";
@@ -9,15 +9,24 @@ interface ConversationProps {
 }
 export const Conversation = ({ conversation }: ConversationProps) => {
   const dispatch = useAppDispatch();
-  const receiver_id = conversation.users[1]._id;
+  const { picture, name, lastMessage } = conversation;
+
+  const { user: currentUser } = useAppSelector((state) => state.user);
+
+  // in array 'users: ['id1', 'id2']' which contains both user's ids inside conversation, the receiver is the one who is not the current user
+  const receiver = conversation.users.find(
+    (user) => user._id !== currentUser._id
+  );
 
   const handleOpenConversation = useCallback(async () => {
+    if (!receiver?._id) return;
+
     try {
-      await dispatch(openConversation(receiver_id)).unwrap();
+      await dispatch(openConversation(receiver._id)).unwrap();
     } catch (err) {
       console.error(err);
     }
-  }, [dispatch, receiver_id]);
+  }, [dispatch, receiver?._id]);
 
   return (
     <div
@@ -27,8 +36,8 @@ export const Conversation = ({ conversation }: ConversationProps) => {
       {/* LEFT */}
       <div className="flex gap-x-3 flex-1 min-w-0">
         <img
-          src={conversation.picture}
-          alt={conversation.name}
+          src={picture}
+          alt={name}
           className="w-11 h-11 rounded-full flex-shrink-0"
         />
 
@@ -36,9 +45,9 @@ export const Conversation = ({ conversation }: ConversationProps) => {
           <h6 className="font-bold leading-6 truncate">{conversation.name}</h6>
 
           <p className="dark:text-dark-text-2 text-sm truncate">
-            {conversation.lastMessage?.message.length > 25
-              ? `${conversation.lastMessage?.message.substring(0, 25)}`
-              : conversation.lastMessage.message}
+            {lastMessage?.message.length > 25
+              ? `${lastMessage?.message.substring(0, 25)}`
+              : lastMessage.message}
           </p>
         </div>
       </div>
@@ -46,9 +55,7 @@ export const Conversation = ({ conversation }: ConversationProps) => {
       {/* RIGHT */}
       <div className="flex text-xs flex-shrink-0">
         <span className="dark:text-dark-text-2 mb-0.5 whitespace-nowrap">
-          {conversation.lastMessage.createdAt
-            ? formatDate(conversation.lastMessage.createdAt)
-            : ""}
+          {lastMessage.createdAt ? formatDate(lastMessage.createdAt) : ""}
         </span>
       </div>
     </div>
