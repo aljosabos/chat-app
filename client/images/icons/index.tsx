@@ -1,6 +1,6 @@
 import { CommunityIcon } from "./Community";
 import { StoryIcon } from "./Story";
-import { ChatIcon } from "./Chat";
+import { ChatIcon } from "./ChatIcon";
 import { NotificationIcon } from "./Notification";
 import { ArrowIcon } from "./Arrow";
 import { CloseIcon } from "./Close";
