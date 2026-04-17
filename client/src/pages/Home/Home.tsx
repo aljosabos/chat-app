@@ -71,7 +71,10 @@ export const Home = () => {
               </div>
             ))
           ) : (
-            <Conversations conversations={conversations} />
+            <Conversations
+              conversations={conversations}
+              activeConversationId={activeConversation._id}
+            />
           )}
         </div>
       </div>

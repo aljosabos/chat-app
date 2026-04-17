@@ -1,13 +1,15 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { openConversation } from "@features/chat/thunks";
 import type { Conversation as ConversationType } from "@features/chat/types";
+import { cn } from "@utils/cn";
 import { formatDate } from "@utils/date";
 import { useCallback } from "react";
 
 interface ConversationProps {
   conversation: ConversationType;
+  isActive: boolean;
 }
-export const Conversation = ({ conversation }: ConversationProps) => {
+export const Conversation = ({ conversation, isActive }: ConversationProps) => {
   const dispatch = useAppDispatch();
   const { picture, name, lastMessage } = conversation;
 
@@ -28,10 +30,18 @@ export const Conversation = ({ conversation }: ConversationProps) => {
     }
   }, [dispatch, receiver?._id]);
 
+  //hover:bg-dark-3
+
   return (
     <div
       onClick={handleOpenConversation}
-      className="flex items-end justify-between p-3 gap-x-3 hover:bg-dark-3 cursor-pointer border-b border-b-dark-5 mx-4"
+      className={cn(
+        "flex items-end justify-between p-3 gap-x-3 cursor-pointer border-b border-b-dark-5 mx-4",
+        {
+          "dark:bg-dark-hover-1": isActive,
+          "hover:bg-dark-3": !isActive,
+        }
+      )}
     >
       {/* LEFT */}
       <div className="flex gap-x-3 flex-1 min-w-0">
