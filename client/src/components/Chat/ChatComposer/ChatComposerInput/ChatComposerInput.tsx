@@ -1,5 +1,4 @@
 import SendIcon from "@icons/Send";
-import { forwardRef } from "react";
 import { ClipLoader } from "react-spinners";
 
 interface IChatComposerInputProps {
@@ -7,12 +6,16 @@ interface IChatComposerInputProps {
   showLoader: boolean;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
   onSend: () => void;
+  ref: React.RefObject<HTMLInputElement | null>;
 }
 
-export const ChatComposerInput = forwardRef<
-  HTMLInputElement,
-  IChatComposerInputProps
->(({ message, showLoader, setMessage, onSend }, ref) => {
+export const ChatComposerInput = ({
+  message,
+  showLoader,
+  setMessage,
+  onSend,
+  ref,
+}: IChatComposerInputProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSend();
@@ -46,4 +49,4 @@ export const ChatComposerInput = forwardRef<
       </button>
     </form>
   );
-});
+};

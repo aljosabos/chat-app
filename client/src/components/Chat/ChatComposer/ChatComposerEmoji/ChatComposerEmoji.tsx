@@ -23,7 +23,11 @@ export const ChatComposerEmoji = ({
       </button>
       <div className="openEmojiAnimation absolute bottom-[55px] left-[0px] w-full">
         {showEmoji && (
-          <EmojiPicker theme={Theme.DARK} onEmojiClick={handleEmoji} />
+          <EmojiPicker
+            theme={Theme.DARK}
+            onEmojiClick={handleEmoji}
+            lazyLoadEmojis
+          />
         )}
       </div>
     </>
