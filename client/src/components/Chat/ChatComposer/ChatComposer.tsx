@@ -12,11 +12,12 @@ type ActivePanel = "emoji" | "attachment" | null;
 
 export const ChatComposer = () => {
   const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
 
   const dispatch = useAppDispatch();
 
-  const { activeConversation, status } = useAppSelector((state) => state.chat);
+  const { activeConversation } = useAppSelector((state) => state.chat);
 
   const msgInputRef = useRef<HTMLInputElement>(null);
   const attachmentRef = useRef<HTMLDivElement>(null);
@@ -25,11 +26,17 @@ export const ChatComposer = () => {
   const handleSendMessage = useCallback(async () => {
     if (!message.trim()) return;
 
-    await dispatch(
-      sendMessage({ conversationId: activeConversation._id, message })
-    );
-    setMessage("");
-    setActivePanel(null);
+    try {
+      setIsSending(true);
+
+      await dispatch(
+        sendMessage({ conversationId: activeConversation._id, message })
+      );
+      setMessage("");
+      setActivePanel(null);
+    } finally {
+      setIsSending(false);
+    }
   }, [activeConversation._id, message, dispatch]);
 
   const handleAddEmoji = (emoji: string) => {
@@ -81,7 +88,7 @@ export const ChatComposer = () => {
       <ChatComposerInput
         ref={msgInputRef}
         message={message}
-        showLoader={status === "pending"}
+        showLoader={isSending}
         setMessage={setMessage}
         onSend={handleSendMessage}
       />
