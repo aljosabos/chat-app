@@ -6,16 +6,21 @@ import {
 import { useCallback, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { sendMessage } from "@features/chat/thunks";
+import { useClickOutside } from "@/hooks/useOutsideClick";
+
+type ActivePanel = "emoji" | "attachment" | null;
 
 export const ChatComposer = () => {
   const [message, setMessage] = useState("");
-  const [showEmoji, setShowEmoji] = useState(false);
+  const [activePanel, setActivePanel] = useState<ActivePanel>(null);
 
   const dispatch = useAppDispatch();
 
   const { activeConversation, status } = useAppSelector((state) => state.chat);
 
   const msgInputRef = useRef<HTMLInputElement>(null);
+  const attachmentRef = useRef<HTMLDivElement>(null);
+  const emojiRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = useCallback(async () => {
     if (!message.trim()) return;
@@ -24,13 +29,13 @@ export const ChatComposer = () => {
       sendMessage({ conversationId: activeConversation._id, message })
     );
     setMessage("");
-    setShowEmoji(false);
+    setActivePanel(null);
   }, [activeConversation._id, message, dispatch]);
 
   const handleAddEmoji = (emoji: string) => {
     const msgInput = msgInputRef.current;
     if (!msgInput) return;
-    
+
     // postions of caret(text cursor) inside input
     const caretStart = msgInput.selectionStart ?? 0;
     const caretEnd = msgInput.selectionEnd ?? 0;
@@ -49,14 +54,30 @@ export const ChatComposer = () => {
     });
   };
 
+  const openEmoji = () =>
+    setActivePanel((prev) => (prev === "emoji" ? null : "emoji"));
+
+  const openAttachment = () =>
+    setActivePanel((prev) => (prev === "attachment" ? null : "attachment"));
+
+  const closePanel = () => setActivePanel(null);
+
+  useClickOutside(attachmentRef, closePanel);
+  useClickOutside(emojiRef, closePanel);
+
   return (
     <div className="flex items-center h-[65px] shrink-0 dark:bg-dark-2 gap-x-3 px-4 relative">
       <ChatComposerEmoji
-        showEmoji={showEmoji}
-        setShowEmoji={setShowEmoji}
+        showEmoji={activePanel === "emoji"}
+        onToggle={openEmoji}
         onSelectEmoji={handleAddEmoji}
+        ref={emojiRef}
       />
-      <ChatComposerAttachment />
+      <ChatComposerAttachment
+        showAttachment={activePanel === "attachment"}
+        onToggle={openAttachment}
+        ref={attachmentRef}
+      />
       <ChatComposerInput
         ref={msgInputRef}
         message={message}

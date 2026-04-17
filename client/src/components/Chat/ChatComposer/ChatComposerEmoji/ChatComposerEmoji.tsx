@@ -3,25 +3,27 @@ import EmojiPicker, { Theme, type EmojiClickData } from "emoji-picker-react";
 
 interface IChatComposerEmojiProps {
   showEmoji: boolean;
-  setShowEmoji: React.Dispatch<React.SetStateAction<boolean>>;
+  onToggle: () => void;
   onSelectEmoji: (emoji: string) => void;
+  ref: React.RefObject<HTMLDivElement | null>;
 }
 
 export const ChatComposerEmoji = ({
   showEmoji,
-  setShowEmoji,
+  onToggle,
   onSelectEmoji,
+  ref,
 }: IChatComposerEmojiProps) => {
   const handleEmoji = (emojiData: EmojiClickData) => {
     onSelectEmoji(emojiData.emoji);
   };
 
   return (
-    <>
-      <button onClick={() => setShowEmoji((prevState) => !prevState)}>
+    <div ref={ref}>
+      <button onClick={onToggle}>
         <EmojiIcon className="dark:fill-dark-svg-1 cursor-pointer" />
       </button>
-      <div className="openEmojiAnimation absolute bottom-[55px] left-[0px] w-full">
+      <div className="absolute bottom-[55px] left-[0px] w-full">
         {showEmoji && (
           <EmojiPicker
             theme={Theme.DARK}
@@ -30,6 +32,6 @@ export const ChatComposerEmoji = ({
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
