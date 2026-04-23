@@ -13,6 +13,7 @@ import {
 import { getConversations } from "@features/chat/thunks";
 import type { User } from "@features/user/types";
 import { userSelector } from "@features/user/userSlice";
+import { socket } from "@utils/socket";
 import { useCallback, useEffect, useState } from "react";
 
 export const Home = () => {
@@ -33,6 +34,12 @@ export const Home = () => {
     } catch (err) {
       console.error("Search error:", err);
     }
+  }, []);
+
+  useEffect(() => {
+    socket.on("connect", () =>
+      console.log("socket.io connection established from the client")
+    );
   }, []);
 
   useEffect(() => {

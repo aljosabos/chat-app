@@ -26,6 +26,7 @@
     "react-spinners": "^0.17.0",
     "redux-persist": "^6.0.0",
     "sass": "^1.89.2",
+    "socket.io-client": "^4.8.3",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.1.11",
     "zod": "^4.0.17"

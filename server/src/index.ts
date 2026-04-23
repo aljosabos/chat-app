@@ -1,6 +1,7 @@
 import { logger } from "./configs/logger.js";
 import app from "./app.js";
 import mongoose from "mongoose";
+import { Server } from "socket.io";
 
 const PORT = process.env.PORT ?? 8000;
 
@@ -24,6 +25,18 @@ mongoose
 const server = app.listen(PORT, () => {
   logger.info(`App is listening on port ${PORT.toString()}....`);
   console.log("process id", process.pid);
+});
+
+// socket.io
+const io = new Server(server, {
+  cors: {
+    origin: true,
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("socket.io connection established from the server");
 });
 
 // handle server errors

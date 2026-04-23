@@ -27,6 +27,7 @@
       "@icons/*": ["images/icons/*"],
       "@components/*": ["src/components/*"],
       "@utils/*": ["src/utils/*"],
+      "@context/*": ["src/context/*"],
       "@pages/*": ["src/pages/*"],
       "@features/*": ["src/features/*"],
       "@api/*": ["src/api/*"],
