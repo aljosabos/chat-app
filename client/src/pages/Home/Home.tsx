@@ -47,6 +47,14 @@ export const Home = () => {
   }, [user._id]);
 
   useEffect(() => {
+    socket.on("receive message", (message) => {
+      console.log("message ----->", message);
+    });
+  }, []);
+
+  console.log(conversations);
+
+  useEffect(() => {
     dispatch(getConversations());
   }, [user, dispatch]);
 

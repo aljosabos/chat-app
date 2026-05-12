@@ -48,10 +48,10 @@ export const registerUserValidator = validator([
     if (!file) return true; // opcionalno
     const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
     if (!allowedMimes.includes(file.mimetype)) {
-      throw new createHttpError.BadRequest("Picture must be JPEG/PNG/WEBP");
+      throw createHttpError.BadRequest("Picture must be JPEG/PNG/WEBP");
     }
     if (file.size > 5 * 1024 * 1024) {
-      throw new createHttpError.BadRequest("Picture must be smaller than 5MB");
+      throw createHttpError.BadRequest("Picture must be smaller than 5MB");
     }
     return true;
   }),

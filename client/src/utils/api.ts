@@ -39,7 +39,7 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
     if (!response.ok) {
       throw {
         status: response.status,
-        message: data?.message || "Request failed",
+        message: data?.error.message || "Request failed",
       };
     }
 

@@ -19,13 +19,12 @@ export default function SocketServer(socket: Socket) {
 
   // send and receive message
   socket.on("send message", (message) => {
-    console.log("new message received ---->", message);
     // need reciever id of an active conversation
     let conversation = message.conversation;
     if (!conversation.users) return;
     conversation.users.forEach((user: ConversationUser) => {
       if (user._id === message.sender._id) return;
-      socket.in(user._id).emit("message received", message);
+      socket.in(user._id).emit("receive message", message);
     });
   });
 }
