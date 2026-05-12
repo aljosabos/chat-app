@@ -2,20 +2,10 @@ import mongoose from "mongoose";
 
 const conversationSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: [true, "Conversation is required."],
-    },
-
     isGroup: {
       type: Boolean,
       required: true,
       default: false,
-    },
-
-    picture: {
-      type: String,
-      required: true,
     },
 
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

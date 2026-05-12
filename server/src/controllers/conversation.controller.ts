@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../configs/logger.js";
 import createHttpError from "http-errors";
 import { findConversation } from "../utils/conversation.js";
-import { User } from "../models/userModel.js";
 import { Conversation } from "../models/conversationModel.js";
 
 // Get conversation between two users if found, or create a new one if its not found
@@ -34,14 +33,9 @@ export const openConversation = async (
       const parsed_conversation = existing_conversation.toObject();
       res.json({ ...parsed_conversation });
     } else {
-      // we need to create new conversation
-      const receiver_user = await User.findById(receiver_id);
-
       const data = {
-        name: receiver_user?.name,
         isGroup: false,
         users: [sender_id, receiver_id],
-        picture: receiver_user?.picture,
       };
 
       const new_conversation = await Conversation.create(data);

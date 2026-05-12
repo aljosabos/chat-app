@@ -12,11 +12,11 @@ interface ConversationProps {
 }
 export const Conversation = ({ conversation, isActive }: ConversationProps) => {
   const dispatch = useAppDispatch();
-  const { picture, name, lastMessage } = conversation;
+  const { lastMessage } = conversation;
 
   const { user: currentUser } = useAppSelector((state) => state.user);
 
-  // in array 'users: ['id1', 'id2']' which contains both user's ids inside conversation, the receiver is the one who is not the current user
+  // users contains both user IDs from the same conversation; receiver is the one that is not the current user
   const receiver = conversation.users.find(
     (user) => user._id !== currentUser._id
   );
@@ -49,13 +49,13 @@ export const Conversation = ({ conversation, isActive }: ConversationProps) => {
       {/* LEFT */}
       <div className="flex gap-x-3 flex-1 min-w-0">
         <img
-          src={picture}
-          alt={name}
+          src={receiver?.picture}
+          alt={receiver?.name}
           className="w-11 h-11 rounded-full flex-shrink-0"
         />
 
         <div className="flex flex-col min-w-0 flex-1">
-          <h6 className="font-bold leading-6 truncate">{conversation.name}</h6>
+          <h6 className="font-bold leading-6 truncate">{receiver?.name}</h6>
 
           <p className="dark:text-dark-text-2 text-sm truncate">
             {lastMessage?.message.length > 25
