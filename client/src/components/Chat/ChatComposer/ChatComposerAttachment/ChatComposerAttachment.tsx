@@ -1,10 +1,12 @@
 import AttachmentIcon from "@icons/Attachment";
 import CameraIcon from "@icons/Camera";
-import ContactIcon from "@icons/Contact";
-import DocumentIcon from "@icons/Document";
-import PhotoIcon from "@icons/Photo";
-import PollIcon from "@icons/Poll";
-import StickerIcon from "@icons/Sticker";
+import {
+  ContactIcon,
+  DocumentIcon,
+  PhotoIcon,
+  PollIcon,
+  StickerIcon,
+} from "@icons/.";
 
 interface IChatComposerAttachmentProps {
   showAttachment: boolean;

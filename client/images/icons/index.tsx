@@ -18,7 +18,7 @@ import PhotoIcon from "./Photo";
 import StickerIcon from "./Sticker";
 import CameraIcon from "./Camera";
 import DocumentIcon from "./Document";
-import ContactIcon from "./Contact";
+import ContactIcon from "./ContactIcon";
 import PollIcon from "./Poll";
 import SmallArrowIcon from "./SmallArrow";
 import LockIcon from "./Lock";

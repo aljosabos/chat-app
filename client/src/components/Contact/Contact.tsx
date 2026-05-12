@@ -1,5 +1,6 @@
 import { useAppDispatch } from "@/hooks/redux";
 import { openConversation } from "@features/chat/thunks";
+import { socket } from "@utils/socket";
 import { useCallback } from "react";
 
 interface ContactProps {
@@ -15,7 +16,11 @@ export const Contact = (contact: ContactProps) => {
 
   const handleOpenConversation = useCallback(async () => {
     try {
-      await dispatch(openConversation(contact._id)).unwrap();
+      const conversation = await dispatch(
+        openConversation(contact._id)
+      ).unwrap();
+
+      socket.emit("join conversation", conversation._id);
     } catch (err) {
       console.error(err);
     }

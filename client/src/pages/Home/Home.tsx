@@ -43,6 +43,10 @@ export const Home = () => {
   }, []);
 
   useEffect(() => {
+    socket.emit("join", user._id);
+  }, [user._id]);
+
+  useEffect(() => {
     dispatch(getConversations());
   }, [user, dispatch]);
 

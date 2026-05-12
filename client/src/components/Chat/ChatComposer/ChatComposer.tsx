@@ -7,6 +7,7 @@ import { useCallback, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { sendMessage } from "@features/chat/thunks";
 import { useClickOutside } from "@/hooks/useOutsideClick";
+import { socket } from "@utils/socket";
 
 type ActivePanel = "emoji" | "attachment" | null;
 
@@ -29,9 +30,11 @@ export const ChatComposer = () => {
     try {
       setIsSending(true);
 
-      await dispatch(
+      const newMessage = await dispatch(
         sendMessage({ conversationId: activeConversation._id, message })
       );
+
+      socket.emit("send message", newMessage.payload);
       setMessage("");
       setActivePanel(null);
     } finally {

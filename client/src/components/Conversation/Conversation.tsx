@@ -3,6 +3,7 @@ import { openConversation } from "@features/chat/thunks";
 import type { Conversation as ConversationType } from "@features/chat/types";
 import { cn } from "@utils/cn";
 import { formatDate } from "@utils/date";
+import { socket } from "@utils/socket";
 import { useCallback } from "react";
 
 interface ConversationProps {
@@ -24,13 +25,15 @@ export const Conversation = ({ conversation, isActive }: ConversationProps) => {
     if (!receiver?._id) return;
 
     try {
-      await dispatch(openConversation(receiver._id)).unwrap();
+      const conversation = await dispatch(
+        openConversation(receiver._id)
+      ).unwrap();
+
+      socket.emit("join conversation", conversation._id);
     } catch (err) {
       console.error(err);
     }
   }, [dispatch, receiver?._id]);
-
-  //hover:bg-dark-3
 
   return (
     <div

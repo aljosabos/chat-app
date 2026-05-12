@@ -2,6 +2,7 @@ import { logger } from "./configs/logger.js";
 import app from "./app.js";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
+import SocketServer from "./SocketServer.js";
 
 const PORT = process.env.PORT ?? 8000;
 
@@ -37,6 +38,7 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("socket.io connection established from the server");
+  SocketServer(socket);
 });
 
 // handle server errors
