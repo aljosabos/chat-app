@@ -29,7 +29,7 @@ export const ChatMessages = () => {
     <div className="w-full h-full mb-[60px] px-6 dark:bg-[url('https://res.cloudinary.com/dmhcnhtng/image/upload/v1677358270/Untitled-1_copy_rpx8yb.jpg')] bg-cover bg-no-repeat bg-center overflow-y-auto scrollbar">
       {messages?.map((msg) => (
         <Message
-          key={msg.createdAt}
+          key={msg._id}
           message={msg.message}
           createdAt={msg.createdAt}
           orientation={msg.sender._id === currentUserId ? "right" : "left"}

@@ -2,9 +2,9 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { openConversation } from "@features/chat/thunks";
 import type { Conversation as ConversationType } from "@features/chat/types";
 import { cn } from "@utils/cn";
-import { formatDate } from "@utils/date";
 import { socket } from "@utils/socket";
 import { useCallback } from "react";
+import { getLastMessage, getLastMessageDate } from "./Conversation.helpers";
 
 interface ConversationProps {
   conversation: ConversationType;
@@ -47,28 +47,27 @@ export const Conversation = ({ conversation, isActive }: ConversationProps) => {
       )}
     >
       {/* LEFT */}
-      <div className="flex gap-x-3 flex-1 min-w-0">
-        <img
-          src={receiver?.picture}
-          alt={receiver?.name}
-          className="w-11 h-11 rounded-full flex-shrink-0"
-        />
+      {
+        <div className="flex gap-x-3 flex-1 min-w-0">
+          <img
+            src={receiver?.picture}
+            alt={receiver?.name}
+            className="w-11 h-11 rounded-full flex-shrink-0"
+          />
 
-        <div className="flex flex-col min-w-0 flex-1">
-          <h6 className="font-bold leading-6 truncate">{receiver?.name}</h6>
-
-          <p className="dark:text-dark-text-2 text-sm truncate">
-            {lastMessage?.message.length > 25
-              ? `${lastMessage?.message.substring(0, 25)}`
-              : lastMessage.message}
-          </p>
+          <div className="flex flex-col min-w-0 flex-1">
+            <h6 className="font-bold leading-6 truncate">{receiver?.name}</h6>
+            <p className="dark:text-dark-text-2 text-sm truncate">
+              {getLastMessage(lastMessage?.message)}
+            </p>
+          </div>
         </div>
-      </div>
+      }
 
       {/* RIGHT */}
       <div className="flex text-xs flex-shrink-0">
         <span className="dark:text-dark-text-2 mb-0.5 whitespace-nowrap">
-          {lastMessage.createdAt ? formatDate(lastMessage.createdAt) : ""}
+          {getLastMessageDate(lastMessage?.createdAt)}
         </span>
       </div>
     </div>

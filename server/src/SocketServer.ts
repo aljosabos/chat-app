@@ -25,9 +25,9 @@ export default function SocketServer(socket: Socket) {
     if (!conversation?.users) return;
 
     conversation.users.forEach((user) => {
-      if (user._id === message.sender._id) return;
+      if (String(user._id) === String(message.sender._id)) return;
+
       socket.in(user._id.toString()).emit("receive message", message);
-      console.log("EMIT to user:", user._id, message);
     });
   });
 }

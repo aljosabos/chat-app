@@ -10,7 +10,12 @@ import {
   Header,
   NotificationsToggle,
 } from "@components/index";
+import {
+  updateConversationLastMessage,
+  updateMessages,
+} from "@features/chat/chatSlice";
 import { getConversations } from "@features/chat/thunks";
+import type { Message } from "@features/chat/types";
 import type { User } from "@features/user/types";
 import { userSelector } from "@features/user/userSlice";
 import { socket } from "@utils/socket";
@@ -47,10 +52,25 @@ export const Home = () => {
   }, [user._id]);
 
   useEffect(() => {
-    socket.on("receive message", (message) => {
-      console.log("message ----->", message);
-    });
-  }, []);
+    const handleReceiveMessage = (message: Message) => {
+      const isActiveConversation =
+        activeConversation._id === message.conversation;
+
+      if (isActiveConversation) {
+        // Update messages only for currently open chat window
+        dispatch(updateMessages(message));
+      } else {
+        // Update preview (lastMessage) for background conversations
+        dispatch(updateConversationLastMessage(message));
+      }
+    };
+
+    socket.on("receive message", handleReceiveMessage);
+
+    return () => {
+      socket.off("receive message", handleReceiveMessage);
+    };
+  }, [dispatch, activeConversation._id]);
 
   useEffect(() => {
     dispatch(getConversations());
@@ -82,9 +102,9 @@ export const Home = () => {
         <div className="min-h-0 flex-1">
           {contacts.length > 0 ? (
             contacts?.map((contact) => (
-              <div>
+              <div key={contact._id}>
                 <span className="m-4 text-green-3 text-sm">Contacts</span>
-                <Contact {...contact} key={contact._id} />
+                <Contact {...contact} />
               </div>
             ))
           ) : (

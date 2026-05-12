@@ -25,7 +25,24 @@ export const chatSlice = createSlice({
     setActiveConversation: (state, action) => {
       state.activeConversation = action.payload;
     },
+
+    updateMessages: (state, action) => {
+      state.messages = [...state.messages, action.payload];
+    },
+
+    updateConversationLastMessage: (state, action) => {
+      const conversationId = action.payload.conversation;
+
+      const conversation = state.conversations.find(
+        (conversation) => conversation._id === conversationId
+      );
+
+      if (conversation) {
+        conversation.lastMessage = action.payload;
+      }
+    },
   },
+
   extraReducers(builder) {
     builder.addCase(getConversations.pending, (state) => {
       state.status = "pending";
@@ -131,7 +148,8 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setActiveConversation } = chatSlice.actions;
+export const { setActiveConversation, updateMessages, updateConversationLastMessage } =
+  chatSlice.actions;
 
 export const conversationsSelector = (state: RootState) =>
   state.chat.conversations;
