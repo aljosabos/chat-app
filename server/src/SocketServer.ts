@@ -1,8 +1,5 @@
 import { Socket } from "socket.io";
-
-type ConversationUser = {
-  _id: string;
-};
+import { Conversation } from "./models/conversationModel.js";
 
 export default function SocketServer(socket: Socket) {
   // user joins or opens the application
@@ -18,13 +15,19 @@ export default function SocketServer(socket: Socket) {
   });
 
   // send and receive message
-  socket.on("send message", (message) => {
+  socket.on("send message", async (message) => {
     // need reciever id of an active conversation
-    let conversation = message.conversation;
-    if (!conversation.users) return;
-    conversation.users.forEach((user: ConversationUser) => {
+    let conversation = await Conversation.findOne({
+      _id: message.conversation,
+    }).populate({ path: "users" });
+
+    console.log("socket server", conversation);
+    if (!conversation?.users) return;
+
+    conversation.users.forEach((user) => {
       if (user._id === message.sender._id) return;
-      socket.in(user._id).emit("receive message", message);
+      socket.in(user._id.toString()).emit("receive message", message);
+      console.log("EMIT to user:", user._id, message);
     });
   });
 }

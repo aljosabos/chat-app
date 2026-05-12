@@ -52,8 +52,6 @@ export const Home = () => {
     });
   }, []);
 
-  console.log(conversations);
-
   useEffect(() => {
     dispatch(getConversations());
   }, [user, dispatch]);
