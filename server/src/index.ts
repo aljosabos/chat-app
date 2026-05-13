@@ -29,7 +29,7 @@ const server = app.listen(PORT, () => {
 });
 
 // socket.io
-const io = new Server(server, {
+const io: Server = new Server(server, {
   cors: {
     origin: true,
     credentials: true,
@@ -38,7 +38,7 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("socket.io connection established from the server");
-  SocketServer(socket);
+  SocketServer(socket, io);
 });
 
 // handle server errors

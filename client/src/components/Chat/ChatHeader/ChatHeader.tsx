@@ -3,11 +3,18 @@ import { DotsIcon } from "@icons/Dots";
 import SearchLargeIcon from "@icons/SearchLarge";
 
 export const ChatHeader = () => {
-  const { users } = useAppSelector((state) => state.chat.activeConversation);
+  const { activeConversation, onlineUsers } = useAppSelector(
+    (state) => state.chat
+  );
   const { user: currentUser } = useAppSelector((state) => state.user);
 
   // users contains both user IDs from the same conversation; receiver is the one that is not the current user
-  const receiver = users.find((user) => user._id !== currentUser._id);
+  const receiver = activeConversation.users.find(
+    (user) => user._id !== currentUser._id
+  );
+
+  // checks whether the receiver is online
+  const isOnline = onlineUsers.some((u) => u.userId === receiver?._id);
 
   return (
     <div className="h-[50px] dark:bg-dark-2 shrink-0 px-4 py-1 flex justify-between items-center">
@@ -21,7 +28,9 @@ export const ChatHeader = () => {
 
         <div className="flex flex-col justify-center">
           <p className="text-white">{receiver?.name}</p>
-          <span className="dark:text-dark-svg-2 text-xs">Online</span>
+          {isOnline && (
+            <span className="text-xs dark:text-dark-svg-2">Online</span>
+          )}
         </div>
       </div>
 

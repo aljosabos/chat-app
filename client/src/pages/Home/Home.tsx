@@ -11,14 +11,16 @@ import {
   NotificationsToggle,
 } from "@components/index";
 import {
+  setOnlineUsers,
   updateConversationLastMessage,
   updateMessages,
 } from "@features/chat/chatSlice";
 import { getConversations } from "@features/chat/thunks";
-import type { Message } from "@features/chat/types";
+import type { Message, OnlineUser } from "@features/chat/types";
 import type { User } from "@features/user/types";
 import { userSelector } from "@features/user/userSlice";
 import { socket } from "@utils/socket";
+
 import { useCallback, useEffect, useState } from "react";
 
 export const Home = () => {
@@ -50,6 +52,18 @@ export const Home = () => {
   useEffect(() => {
     socket.emit("join", user._id);
   }, [user._id]);
+
+  useEffect(() => {
+    const handleOnlineUsers = (users: OnlineUser[]) => {
+      dispatch(setOnlineUsers(users));
+    };
+
+    socket.on("online-users", handleOnlineUsers);
+
+    return () => {
+      socket.off("online-users", handleOnlineUsers);
+    };
+  }, []);
 
   useEffect(() => {
     const handleReceiveMessage = (message: Message) => {

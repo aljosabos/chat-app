@@ -15,11 +15,15 @@ export const Conversation = ({ conversation, isActive }: ConversationProps) => {
   const { lastMessage } = conversation;
 
   const { user: currentUser } = useAppSelector((state) => state.user);
+  const { onlineUsers } = useAppSelector((state) => state.chat);
 
   // users contains both user IDs from the same conversation; receiver is the one that is not the current user
   const receiver = conversation.users.find(
     (user) => user._id !== currentUser._id
   );
+
+  // checks whether the receiver is online
+  const isOnline = onlineUsers.some((u) => u.userId === receiver?._id);
 
   const handleOpenConversation = useCallback(async () => {
     if (!receiver?._id) return;
@@ -52,7 +56,9 @@ export const Conversation = ({ conversation, isActive }: ConversationProps) => {
           <img
             src={receiver?.picture}
             alt={receiver?.name}
-            className="w-11 h-11 rounded-full flex-shrink-0"
+            className={cn("w-11 h-11 rounded-full flex-shrink-0", {
+              "border-2 border-[#00a884]": isOnline,
+            })}
           />
 
           <div className="flex flex-col min-w-0 flex-1">

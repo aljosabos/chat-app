@@ -7,6 +7,7 @@ export interface ChatState {
   activeConversation: Conversation;
   messages: Message[];
   notifications: string[];
+  onlineUsers: OnlineUser[];
 }
 
 export interface Conversation {
@@ -37,4 +38,9 @@ export interface MessageResponse {
   conversation: string;
   files: File[];
   createdAt: string;
+}
+
+export interface OnlineUser {
+  userId: string;
+  socketId: string;
 }

@@ -16,6 +16,7 @@ const initialState: ChatState = {
   activeConversation: {} as Conversation,
   messages: [],
   notifications: [],
+  onlineUsers: [],
 };
 
 export const chatSlice = createSlice({
@@ -40,6 +41,10 @@ export const chatSlice = createSlice({
       if (conversation) {
         conversation.lastMessage = action.payload;
       }
+    },
+
+    setOnlineUsers: (state, action) => {
+      state.onlineUsers = action.payload;
     },
   },
 
@@ -148,8 +153,12 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { setActiveConversation, updateMessages, updateConversationLastMessage } =
-  chatSlice.actions;
+export const {
+  setActiveConversation,
+  updateMessages,
+  updateConversationLastMessage,
+  setOnlineUsers,
+} = chatSlice.actions;
 
 export const conversationsSelector = (state: RootState) =>
   state.chat.conversations;
