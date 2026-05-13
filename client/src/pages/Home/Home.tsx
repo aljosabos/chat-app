@@ -63,7 +63,7 @@ export const Home = () => {
     return () => {
       socket.off("online-users", handleOnlineUsers);
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const handleReceiveMessage = (message: Message) => {
