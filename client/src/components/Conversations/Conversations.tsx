@@ -18,7 +18,6 @@ export const Conversations = ({
           isActive={conversation._id === activeConversationId}
         />
       ))}
-      )
     </div>
   );
 };
