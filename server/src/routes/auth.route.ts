@@ -4,11 +4,11 @@ import {
   logout,
   refreshToken,
   register,
+  verifyEmail,
 } from "../controllers/auth.controller.js";
 import express from "express";
 import trimRequest from "trim-request";
 import multer from "multer";
-import { sendTestEmail } from "../utils/sendEmailTest.js";
 
 const router = express.Router();
 
@@ -21,14 +21,6 @@ router
 router.route("/login").post(trimRequest.all, login);
 router.route("/logout").post(trimRequest.all, logout);
 router.route("/refreshToken").post(trimRequest.all, refreshToken);
-
-router.get("/test-email", async (req, res, next) => {
-  try {
-    await sendTestEmail();
-    res.send("Email sent");
-  } catch (err) {
-    next(err);
-  }
-});
+router.route("/verify-email/:token").get(trimRequest.all, verifyEmail);
 
 export default router;

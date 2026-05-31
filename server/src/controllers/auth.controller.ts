@@ -42,6 +42,8 @@ export const register = async (
 
     const verificationLink = `${process.env.CLIENT_URL}/verify-email/${emailToken}`;
 
+    console.log("Verification Link:", verificationLink);
+
     const resend = new Resend(process.env.RESEND_API_KEY!);
 
     await resend.emails.send({
@@ -228,13 +230,15 @@ export const verifyEmail = async (
     }
 
     if (user.isVerified) {
-      return res.json({ message: "Email already verified" });
+      res.json({ message: "Email already verified" });
+      return;
     }
 
     user.isVerified = true;
     await user.save();
 
     res.json({ message: "Email verified successfully" });
+    return;
   } catch (err) {
     next(err);
   }

@@ -1,7 +1,7 @@
 import { getErrorMessage } from "@utils/error";
+import { ApiError } from "./apiError";
 
 export const apiFetch = async (url: string, options: RequestInit = {}) => {
-  // remove leading slash if accidentally passed
   const parsedUrl = url.startsWith("/") ? url.slice(1) : url;
 
   const isFormData = options.body instanceof FormData;
@@ -9,18 +9,17 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
   try {
     const headers = new Headers(options.headers);
 
-    // Only set JSON header if NOT FormData and not already set
+    // JSON header samo ako nije FormData
     if (!isFormData && !headers.has("Content-Type")) {
       headers.set("Content-Type", "application/json");
     }
 
-    // Prepare body
     const body =
       isFormData || typeof options.body === "string"
         ? options.body
         : options.body
-        ? JSON.stringify(options.body)
-        : undefined;
+          ? JSON.stringify(options.body)
+          : undefined;
 
     const response = await fetch(`/api/v1/${parsedUrl}`, {
       ...options,
@@ -28,6 +27,7 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
       body,
     });
 
+    // pokušaj parse JSON-a
     let data = null;
 
     try {
@@ -36,19 +36,21 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
       data = null;
     }
 
+    // HTTP error handling
     if (!response.ok) {
-      throw {
-        status: response.status,
-        message: data?.error.message || "Request failed",
-      };
+      throw new ApiError(
+        data?.error?.message || data?.message || "Request failed",
+        response.status,
+      );
     }
 
     return data;
   } catch (err) {
-    throw {
-      status: 0,
-      message: getErrorMessage(err),
-      original: err,
-    };
+    // network / runtime errors
+    if (err instanceof ApiError) {
+      throw err;
+    }
+
+    throw new ApiError(getErrorMessage(err), 0);
   }
 };
