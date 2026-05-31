@@ -9,7 +9,7 @@ export interface IUserPayload {
 export const generateToken = (
   payload: IUserPayload,
   expiresIn: StringValue,
-  secret: string
+  secret: string,
 ) => {
   const token = jwt.sign(payload, secret, { expiresIn });
 
@@ -18,7 +18,7 @@ export const generateToken = (
 
 export const verifyToken = (
   token: string,
-  secret: string
+  secret: string,
 ): IUserPayload | null => {
   try {
     const decoded = jwt.verify(token, secret);
@@ -29,18 +29,18 @@ export const verifyToken = (
     return null;
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
-      // Token je istekao
+      // Token has expired
       throw new createHttpError.Unauthorized("Access token expired");
     }
     if (err instanceof jwt.JsonWebTokenError) {
-      // Token je nevažeći
+      // Token is invalid
       throw new createHttpError.Unauthorized("Invalid access token");
     }
     throw err; // fallback
   }
 };
 const isUserPayload = (
-  payload: JwtPayload | string
+  payload: JwtPayload | string,
 ): payload is IUserPayload => {
   return typeof payload !== "string" && typeof payload.userId === "string";
 };

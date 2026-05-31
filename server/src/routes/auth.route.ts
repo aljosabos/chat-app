@@ -8,6 +8,7 @@ import {
 import express from "express";
 import trimRequest from "trim-request";
 import multer from "multer";
+import { sendTestEmail } from "../utils/sendEmailTest.js";
 
 const router = express.Router();
 
@@ -20,5 +21,14 @@ router
 router.route("/login").post(trimRequest.all, login);
 router.route("/logout").post(trimRequest.all, logout);
 router.route("/refreshToken").post(trimRequest.all, refreshToken);
+
+router.get("/test-email", async (req, res, next) => {
+  try {
+    await sendTestEmail();
+    res.send("Email sent");
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default router;

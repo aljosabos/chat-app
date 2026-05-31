@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Hey there i am using chat app",
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
 
     password: {
       type: String,
@@ -35,7 +39,7 @@ const userSchema = new mongoose.Schema(
   {
     collection: "users",
     timestamps: true,
-  }
+  },
 );
 
 // hashing the password before the user is registered

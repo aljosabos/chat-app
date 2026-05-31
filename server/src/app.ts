@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
+import "dotenv/config";
 import morgan from "morgan";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
@@ -16,7 +16,7 @@ interface HttpError extends Error {
   status?: number;
 }
 
-dotenv.config();
+// dotenv.config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -34,7 +34,7 @@ app.use(
   cors({
     origin: true,
     credentials: true,
-  })
+  }),
 );
 
 app.use((req, res, next) => {
@@ -60,7 +60,7 @@ app.use(
         imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
       },
     },
-  })
+  }),
 );
 //parse JSON request body
 app.use(express.json({ limit: "10mb" }));
@@ -108,7 +108,7 @@ app.use(
         message: err.message,
       },
     });
-  }
+  },
 );
 
 export default app;
