@@ -16,8 +16,10 @@ export const VerifyEmail = () => {
     const verifyEmail = async () => {
       try {
         await apiFetch(`auth/verify-email/${token}`);
+
         setStatus("success");
         setMessage("Email verified successfully!");
+
         setTimeout(() => {
           navigate("/login");
         }, 2000);
@@ -26,6 +28,7 @@ export const VerifyEmail = () => {
           err instanceof ApiError
             ? err.message
             : "Verification failed or link expired";
+
         setStatus("error");
         setMessage(message);
       }

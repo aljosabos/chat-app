@@ -31,6 +31,10 @@ export const userSlice = createSlice({
       state.error = "";
       state.authStatus = "idle";
     },
+
+    updateAccessToken: (state, action) => {
+      state.user.accessToken = action.payload;
+    },
   },
 
   extraReducers: (builder) => {

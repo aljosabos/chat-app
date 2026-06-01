@@ -1,5 +1,6 @@
 import { getErrorMessage } from "@utils/error";
 import { ApiError } from "./apiError";
+import { store } from "@store";
 
 export const apiFetch = async (url: string, options: RequestInit = {}) => {
   const parsedUrl = url.startsWith("/") ? url.slice(1) : url;
@@ -7,11 +8,16 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
   const isFormData = options.body instanceof FormData;
 
   try {
+    const token = store.getState().user.user.accessToken;
     const headers = new Headers(options.headers);
 
     // JSON header samo ako nije FormData
     if (!isFormData && !headers.has("Content-Type")) {
       headers.set("Content-Type", "application/json");
+    }
+
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
     }
 
     const body =

@@ -44,10 +44,10 @@ export const register = async (
 
     console.log("Verification Link:", verificationLink);
 
-    const resend = new Resend(process.env.RESEND_API_KEY!);
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "noreply@verify.chatlogin.org",
       to: newUser.email,
       subject: "Verify your email",
       html: `

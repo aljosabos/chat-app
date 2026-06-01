@@ -1,11 +1,7 @@
 import type { RootState } from "@/store";
 import type { ApiError } from "@/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type {
-  ConversationsResponse,
-  Conversation,
-  Message,
-} from "./types";
+import type { ConversationsResponse, Conversation, Message } from "./types";
 import { apiFetch } from "@utils/api";
 import { isApiError } from "@/helpers";
 
@@ -14,16 +10,9 @@ export const getConversations = createAsyncThunk<
   ConversationsResponse,
   void,
   { rejectValue: { error: ApiError }; state: RootState }
->("conversations/get", async (_, { rejectWithValue, getState }) => {
+>("conversations/get", async (_, { rejectWithValue }) => {
   try {
-    const state = getState();
-    const token = state.user.user.accessToken;
-
-    const data = await apiFetch("conversation", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const data = await apiFetch("conversation");
 
     return data;
   } catch (err) {
@@ -40,49 +29,33 @@ export const openConversation = createAsyncThunk<
   Conversation,
   string,
   { rejectValue: { error: ApiError }; state: RootState }
->(
-  "conversations/create",
-  async (receiver_id, { rejectWithValue, getState }) => {
-    try {
-      const state = getState();
-      const token = state.user.user.accessToken;
+>("conversations/create", async (receiver_id, { rejectWithValue }) => {
+  try {
+    const data = await apiFetch("conversation", {
+      method: "POST",
+      body: JSON.stringify({ receiver_id }),
+    });
 
-      const data = await apiFetch("conversation", {
-        method: "POST",
-        body: JSON.stringify({ receiver_id }),
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    return data;
+  } catch (err) {
+    const error = isApiError(err)
+      ? err
+      : { status: 500, message: "Network error" };
 
-      return data;
-    } catch (err) {
-      const error = isApiError(err)
-        ? err
-        : { status: 500, message: "Network error" };
-
-      return rejectWithValue({ error });
-    }
+    return rejectWithValue({ error });
   }
-);
+});
 
 // get all messages from the specific user (conversation)
 export const getConversationMessages = createAsyncThunk<
   Message[],
   string,
   { rejectValue: { error: ApiError }; state: RootState }
->("messages/get", async (conversationId, { rejectWithValue, getState }) => {
+>("messages/get", async (conversationId, { rejectWithValue }) => {
   try {
-    const state = getState();
-    const token = state.user.user.accessToken;
-
     const url = `message/${conversationId}`;
 
-    const data = await apiFetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const data = await apiFetch(url);
 
     return data;
   } catch (err) {
@@ -99,11 +72,8 @@ export const sendMessage = createAsyncThunk<
   Message,
   { conversationId: string; message: string; files?: File[] },
   { rejectValue: { error: ApiError }; state: RootState }
->("messages/send", async (values, { rejectWithValue, getState }) => {
+>("messages/send", async (values, { rejectWithValue }) => {
   try {
-    const state = getState();
-    const token = state.user.user.accessToken;
-
     const hasFiles = values.files && values.files.length > 0;
 
     const body = hasFiles
@@ -126,9 +96,6 @@ export const sendMessage = createAsyncThunk<
 
     const data = await apiFetch("message", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
       body,
     });
 
