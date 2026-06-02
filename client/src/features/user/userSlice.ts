@@ -82,7 +82,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { logout, resetUserError } = userSlice.actions;
+export const { logout, resetUserError, updateAccessToken } = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const userSelector = (state: RootState) => state.user;
