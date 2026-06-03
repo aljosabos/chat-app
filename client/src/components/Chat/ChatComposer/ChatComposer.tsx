@@ -21,7 +21,6 @@ export const ChatComposer = () => {
   const { activeConversation } = useAppSelector((state) => state.chat);
 
   const msgInputRef = useRef<HTMLInputElement>(null);
-  const attachmentRef = useRef<HTMLDivElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = useCallback(async () => {
@@ -31,7 +30,7 @@ export const ChatComposer = () => {
       setIsSending(true);
 
       const newMessage = await dispatch(
-        sendMessage({ conversationId: activeConversation._id, message })
+        sendMessage({ conversationId: activeConversation._id, message }),
       );
 
       socket.emit("send message", newMessage.payload);
@@ -59,7 +58,7 @@ export const ChatComposer = () => {
       msgInput.focus();
       msgInput.setSelectionRange(
         caretStart + emoji.length,
-        caretStart + emoji.length
+        caretStart + emoji.length,
       );
     });
   };
@@ -72,7 +71,6 @@ export const ChatComposer = () => {
 
   const closePanel = () => setActivePanel(null);
 
-  useClickOutside(attachmentRef, closePanel);
   useClickOutside(emojiRef, closePanel);
 
   return (
@@ -86,7 +84,6 @@ export const ChatComposer = () => {
       <ChatComposerAttachment
         showAttachment={activePanel === "attachment"}
         onToggle={openAttachment}
-        ref={attachmentRef}
       />
       <ChatComposerInput
         ref={msgInputRef}

@@ -11,16 +11,14 @@ import {
 interface IChatComposerAttachmentProps {
   showAttachment: boolean;
   onToggle: () => void;
-  ref: React.RefObject<HTMLDivElement | null>;
 }
 
 export const ChatComposerAttachment = ({
   showAttachment,
   onToggle,
-  ref,
 }: IChatComposerAttachmentProps) => {
   return (
-    <div ref={ref}>
+    <div>
       <button className="cursor-pointer" onClick={onToggle}>
         <AttachmentIcon className="dark:fill-dark-svg-1" />
       </button>
