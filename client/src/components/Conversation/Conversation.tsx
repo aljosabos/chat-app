@@ -9,8 +9,13 @@ import { getLastMessage, getLastMessageDate } from "./Conversation.helpers";
 interface ConversationProps {
   conversation: ConversationType;
   isActive: boolean;
+  onOpenChat: () => void;
 }
-export const Conversation = ({ conversation, isActive }: ConversationProps) => {
+export const Conversation = ({
+  conversation,
+  isActive,
+  onOpenChat,
+}: ConversationProps) => {
   const dispatch = useAppDispatch();
   const { lastMessage } = conversation;
 
@@ -19,7 +24,7 @@ export const Conversation = ({ conversation, isActive }: ConversationProps) => {
 
   // users contains both user IDs from the same conversation; receiver is the one that is not the current user
   const receiver = conversation.users.find(
-    (user) => user._id !== currentUser._id
+    (user) => user._id !== currentUser._id,
   );
 
   // checks whether the receiver is online
@@ -30,7 +35,7 @@ export const Conversation = ({ conversation, isActive }: ConversationProps) => {
 
     try {
       const conversation = await dispatch(
-        openConversation(receiver._id)
+        openConversation(receiver._id),
       ).unwrap();
 
       socket.emit("join conversation", conversation._id);
@@ -47,12 +52,12 @@ export const Conversation = ({ conversation, isActive }: ConversationProps) => {
         {
           "dark:bg-dark-hover-1": isActive,
           "hover:bg-dark-3": !isActive,
-        }
+        },
       )}
     >
       {/* LEFT */}
       {
-        <div className="flex gap-x-3 flex-1 min-w-0">
+        <div className="flex gap-x-3 flex-1 min-w-0" onClick={onOpenChat}>
           <img
             src={receiver?.picture}
             alt={receiver?.name}

@@ -1,7 +1,8 @@
 interface IReturnIconProps {
   className?: string;
+  onClick?: () => void;
 }
-export const ReturnIcon = ({ className }: IReturnIconProps) => {
+export const ReturnIcon = ({ className, onClick }: IReturnIconProps) => {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -15,6 +16,7 @@ export const ReturnIcon = ({ className }: IReturnIconProps) => {
       xmlSpace="preserve"
       fill="currentColor"
       className={className}
+      onClick={onClick}
     >
       <path
         className={className}

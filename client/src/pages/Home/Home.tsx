@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useDebounce } from "@/hooks/useDebounce";
 import { searchUser } from "@api/user";
 import {
-  Chat,
+  ChatView,
   ChatPlaceholder,
   ChatSearch,
   Contact,
@@ -28,10 +28,14 @@ export const Home = () => {
   const { user } = useAppSelector(userSelector);
   const [search, setSearch] = useState("");
   const [contacts, setContacts] = useState<User[]>([]);
+  /* For mobile view: whether the chat window is open or we are still on the conversations list */
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  console.log(isChatOpen);
 
   const debouncedSearch = useDebounce(search);
   const { conversations, activeConversation } = useAppSelector(
-    (state) => state.chat
+    (state) => state.chat,
   );
 
   const handleSearchUser = useCallback(async (search: string) => {
@@ -45,7 +49,7 @@ export const Home = () => {
 
   useEffect(() => {
     socket.on("connect", () =>
-      console.log("socket.io connection established from the client")
+      console.log("socket.io connection established from the client"),
     );
   }, []);
 
@@ -106,13 +110,12 @@ export const Home = () => {
 
   return (
     <div className="h-screen dark:bg-dark-1 flex">
-      <div className="w-[500px] flex flex-col">
+      <div className="w-full flex flex-col sm:max-w-sm">
         <div className="flex-shrink-0">
           <Header />
           <NotificationsToggle />
           <ChatSearch search={search} setSearchContacts={setSearch} />
         </div>
-
         <div className="min-h-0 flex-1">
           {contacts.length > 0 ? (
             contacts?.map((contact) => (
@@ -125,11 +128,26 @@ export const Home = () => {
             <Conversations
               conversations={conversations}
               activeConversationId={activeConversation._id}
+              onOpenChat={() => setIsChatOpen(true)}
             />
           )}
         </div>
+        )
       </div>
-      {activeConversation._id ? <Chat /> : <ChatPlaceholder />}
+      {/* DESKTOP CHAT ONLY */}
+      <div className="hidden sm:block w-full">
+        {activeConversation._id ? <ChatView /> : <ChatPlaceholder />}
+      </div>
+      {/* MOBILE CHAT - shows when isChatOpen is true */}
+      {isChatOpen && (
+        <div className="sm:hidden fixed inset-0 w-full z-50 bg-white dark:bg-dark-1">
+          {activeConversation._id ? (
+            <ChatView onBack={() => setIsChatOpen(false)} />
+          ) : (
+            <ChatPlaceholder />
+          )}
+        </div>
+      )}
     </div>
   );
 };

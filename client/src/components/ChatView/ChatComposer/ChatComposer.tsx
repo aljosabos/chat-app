@@ -2,7 +2,7 @@ import {
   ChatComposerAttachment,
   ChatComposerEmoji,
   ChatComposerInput,
-} from "./";
+} from ".";
 import { useCallback, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { sendMessage } from "@features/chat/thunks";

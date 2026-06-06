@@ -4,10 +4,12 @@ import type { Conversation as ConversationType } from "@features/chat/types";
 interface ConversationsProps {
   conversations: ConversationType[];
   activeConversationId: string;
+  onOpenChat: () => void;
 }
 export const Conversations = ({
   conversations,
   activeConversationId,
+  onOpenChat,
 }: ConversationsProps) => {
   return (
     <div className="h-full overflow-y-auto scrollbar text-white">
@@ -16,6 +18,7 @@ export const Conversations = ({
           key={conversation._id}
           conversation={conversation}
           isActive={conversation._id === activeConversationId}
+          onOpenChat={onOpenChat}
         />
       ))}
     </div>
