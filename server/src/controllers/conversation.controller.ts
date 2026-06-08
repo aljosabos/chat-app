@@ -8,7 +8,7 @@ import { Conversation } from "../models/conversationModel.js";
 export const openConversation = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const sender_id = req?.user?.userId;
@@ -17,7 +17,7 @@ export const openConversation = async (
     // check if receiver_id is provided
     if (!receiver_id) {
       logger.error(
-        "Please provide the user id you wanna start a conversation with!"
+        "Please provide the user id you wanna start a conversation with!",
       );
 
       throw createHttpError.BadGateway("No receiver id found!");
@@ -26,7 +26,7 @@ export const openConversation = async (
     // check if conversation exists
     const existing_conversation = await findConversation(
       receiver_id,
-      sender_id
+      sender_id,
     );
 
     if (existing_conversation) {
@@ -54,11 +54,27 @@ export const openConversation = async (
   }
 };
 
+export const deleteConversation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const conversationId = req.params.id;
+
+    await Conversation.findByIdAndDelete(conversationId);
+
+    res.json({ message: "Conversation deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Get all conversations from a specific user
 export const getUserConversations = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const userId = req.user?.userId;

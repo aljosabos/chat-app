@@ -5,11 +5,13 @@ interface ConversationsProps {
   conversations: ConversationType[];
   activeConversationId: string;
   onOpenChat: () => void;
+  onDeleteConversation: (conversationId: string) => void;
 }
 export const Conversations = ({
   conversations,
   activeConversationId,
   onOpenChat,
+  onDeleteConversation,
 }: ConversationsProps) => {
   return (
     <div className="h-full overflow-y-auto scrollbar text-white">
@@ -19,6 +21,7 @@ export const Conversations = ({
           conversation={conversation}
           isActive={conversation._id === activeConversationId}
           onOpenChat={onOpenChat}
+          onDeleteConversation={ () => onDeleteConversation(conversation._id)}
         />
       ))}
     </div>

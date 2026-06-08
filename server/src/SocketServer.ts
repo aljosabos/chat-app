@@ -38,7 +38,10 @@ export default function SocketServer(socket: Socket, io: Server) {
     // need reciever id of an active conversation
     let conversation = await Conversation.findOne({
       _id: message.conversation,
-    }).populate({ path: "users" });
+    }).populate([
+      { path: "users", select: "-password" },
+      { path: "lastMessage" },
+    ]);
 
     console.log("socket server", conversation);
     if (!conversation?.users) return;
@@ -46,7 +49,10 @@ export default function SocketServer(socket: Socket, io: Server) {
     conversation.users.forEach((user) => {
       if (String(user._id) === String(message.sender._id)) return;
 
-      socket.in(user._id.toString()).emit("receive message", message);
+      socket.in(user._id.toString()).emit("receive message", {
+        message,
+        conversation,
+      });
     });
   });
 }

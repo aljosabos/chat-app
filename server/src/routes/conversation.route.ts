@@ -1,4 +1,5 @@
 import {
+  deleteConversation,
   getUserConversations,
   openConversation,
 } from "../controllers/conversation.controller.js";
@@ -10,5 +11,6 @@ const router = express.Router();
 
 router.route("/").post(trimRequest.all, authMiddleware, openConversation);
 router.route("/").get(trimRequest.all, authMiddleware, getUserConversations);
+router.route("/:id").delete(authMiddleware, deleteConversation);
 
 export default router;

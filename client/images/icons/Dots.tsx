@@ -1,6 +1,6 @@
 interface IDotsIconProps {
   className?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<SVGSVGElement>) => void;
 }
 export const DotsIcon = ({ className, onClick }: IDotsIconProps) => {
   return (
@@ -16,7 +16,7 @@ export const DotsIcon = ({ className, onClick }: IDotsIconProps) => {
       xmlSpace="preserve"
       fill="currentColor"
       className={className}
-      onClick={onClick}
+      onClick={(e) => onClick && onClick(e)}
     >
       <path
         className={className}

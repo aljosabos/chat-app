@@ -8,6 +8,8 @@ import { Contact } from "./Contact/Contact";
 import { UserMenu } from "./UserMenu/UserMenu";
 import { ChatPlaceholder } from "./ChatPlaceholder/ChatPlaceholder";
 import { ChatView } from "./ChatView/ChatView";
+import { Contacts } from "./Contacts/Contacts";
+import { ConfirmationModal } from "./ConfirmationModal/ConfirmationModal";
 
 export {
   Header,
@@ -20,4 +22,6 @@ export {
   UserMenu,
   ChatPlaceholder,
   ChatView,
+  Contacts,
+  ConfirmationModal,
 };

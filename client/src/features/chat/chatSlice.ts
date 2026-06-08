@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { ChatState, Conversation } from "./types";
 import type { RootState } from "@/store";
 import {
+  deleteConversation,
   getConversationMessages,
   getConversations,
   openConversation,
@@ -35,7 +36,7 @@ export const chatSlice = createSlice({
       const conversationId = action.payload.conversation;
 
       const conversation = state.conversations.find(
-        (conversation) => conversation._id === conversationId
+        (conversation) => conversation._id === conversationId,
       );
 
       if (conversation) {
@@ -46,8 +47,19 @@ export const chatSlice = createSlice({
     setOnlineUsers: (state, action) => {
       state.onlineUsers = action.payload;
     },
-  },
 
+    addConversation: (state, action) => {
+      const conversation = action.payload;
+      const existingConversation = state.conversations.find(
+        (c) => c._id === conversation._id
+      );
+
+      if (!existingConversation) {
+        state.conversations.unshift(conversation);
+      }
+    },
+  },
+  // **** GET CONVERSATIONS ***//
   extraReducers(builder) {
     builder.addCase(getConversations.pending, (state) => {
       state.status = "pending";
@@ -89,6 +101,39 @@ export const chatSlice = createSlice({
       state.status = "success";
       state.error = "";
       state.activeConversation = action.payload;
+
+      // Add new conversation to the list if it doesn't already exist
+      const existingConversation = state.conversations.find(
+        (c) => c._id === action.payload._id
+      );
+
+      if (!existingConversation) {
+        state.conversations.unshift(action.payload);
+      }
+    });
+
+    /**** DELETE CONVERSATION  ****/
+    builder.addCase(deleteConversation.pending, (state) => {
+      state.status = "pending";
+      state.error = "";
+    });
+
+    builder.addCase(deleteConversation.rejected, (state, action) => {
+      state.status = "error";
+      if (action.payload) {
+        state.error = action.payload.error.message;
+      } else {
+        state.error = action.error.message || "Unknown error";
+      }
+    });
+
+    builder.addCase(deleteConversation.fulfilled, (state, action) => {
+      state.status = "success";
+      state.error = "";
+      state.conversations = state.conversations.filter(
+        (c) => c._id !== action.payload,
+      );
+      state.activeConversation = {} as Conversation;
     });
 
     /**** GET CONVERSATION MESSAGES  ****/
@@ -136,7 +181,7 @@ export const chatSlice = createSlice({
       const activeConversationId = action.payload.conversation;
 
       const activeConversationIndex = state.conversations.findIndex(
-        (c) => c._id === activeConversationId
+        (c) => c._id === activeConversationId,
       );
 
       if (activeConversationIndex === -1) return;
@@ -154,6 +199,7 @@ export const chatSlice = createSlice({
 });
 
 export const {
+  addConversation,
   setActiveConversation,
   updateMessages,
   updateConversationLastMessage,

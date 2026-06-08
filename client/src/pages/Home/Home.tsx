@@ -5,22 +5,23 @@ import {
   ChatView,
   ChatPlaceholder,
   ChatSearch,
-  Contact,
   Conversations,
   Header,
   NotificationsToggle,
+  Contacts,
+  ConfirmationModal,
 } from "@components/index";
 import {
+  addConversation,
   setOnlineUsers,
   updateConversationLastMessage,
   updateMessages,
 } from "@features/chat/chatSlice";
-import { getConversations } from "@features/chat/thunks";
-import type { Message, OnlineUser } from "@features/chat/types";
+import { deleteConversation, getConversations } from "@features/chat/thunks";
+import type { Message, OnlineUser, Conversation as ConversationType } from "@features/chat/types";
 import type { User } from "@features/user/types";
 import { userSelector } from "@features/user/userSlice";
 import { socket } from "@utils/socket";
-
 import { useCallback, useEffect, useState } from "react";
 
 export const Home = () => {
@@ -28,10 +29,16 @@ export const Home = () => {
   const { user } = useAppSelector(userSelector);
   const [search, setSearch] = useState("");
   const [contacts, setContacts] = useState<User[]>([]);
+  const [conversationToDeleteId, setConversationToDeleteId] = useState<
+    string | null
+  >(null);
+  const [shouldShowConfirmationModal, setShouldShowConfirmationModal] =
+    useState(false);
+
+  console.log(conversationToDeleteId);
+
   /* For mobile view: whether the chat window is open or we are still on the conversations list */
   const [isChatOpen, setIsChatOpen] = useState(false);
-
-  console.log(isChatOpen);
 
   const debouncedSearch = useDebounce(search);
   const { conversations, activeConversation } = useAppSelector(
@@ -46,6 +53,20 @@ export const Home = () => {
       console.error("Search error:", err);
     }
   }, []);
+
+  const handleDeleteConversation = useCallback(async () => {
+    if (!conversationToDeleteId) return;
+    try {
+      await dispatch(deleteConversation(conversationToDeleteId)).unwrap();
+      setShouldShowConfirmationModal(false);
+      setConversationToDeleteId(null);
+    } catch (err) {
+      console.error("Delete conversation error:", err);
+    } finally {
+      setShouldShowConfirmationModal(false);
+      setConversationToDeleteId(null);
+    }
+  }, [dispatch, conversationToDeleteId]);
 
   useEffect(() => {
     socket.on("connect", () =>
@@ -70,9 +91,14 @@ export const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const handleReceiveMessage = (message: Message) => {
+    const handleReceiveMessage = ({ message, conversation }: { message: Message; conversation: ConversationType }) => {
       const isActiveConversation =
         activeConversation._id === message.conversation;
+
+      // Check if conversation exists in the list
+      const conversationExists = conversations.some(
+        (c) => c._id === conversation._id
+      );
 
       if (isActiveConversation) {
         // Update messages only for currently open chat window
@@ -81,6 +107,11 @@ export const Home = () => {
         // Update preview (lastMessage) for background conversations
         dispatch(updateConversationLastMessage(message));
       }
+
+      // If conversation doesn't exist, add it to the list
+      if (!conversationExists) {
+        dispatch(addConversation(conversation));
+      }
     };
 
     socket.on("receive message", handleReceiveMessage);
@@ -88,7 +119,7 @@ export const Home = () => {
     return () => {
       socket.off("receive message", handleReceiveMessage);
     };
-  }, [dispatch, activeConversation._id]);
+  }, [dispatch, activeConversation._id, conversations]);
 
   useEffect(() => {
     dispatch(getConversations());
@@ -118,27 +149,28 @@ export const Home = () => {
         </div>
         <div className="min-h-0 flex-1">
           {contacts.length > 0 ? (
-            contacts?.map((contact) => (
-              <div key={contact._id}>
-                <span className="m-4 text-green-3 text-sm">Contacts</span>
-                <Contact {...contact} />
-              </div>
-            ))
+            <Contacts contacts={contacts} />
           ) : (
             <Conversations
               conversations={conversations}
               activeConversationId={activeConversation._id}
               onOpenChat={() => setIsChatOpen(true)}
+              onDeleteConversation={(conversationId: string) => {
+                setConversationToDeleteId(conversationId);
+                setShouldShowConfirmationModal(true);
+              }}
             />
           )}
         </div>
         )
       </div>
+
       {/* DESKTOP CHAT ONLY */}
       <div className="hidden sm:block w-full">
         {activeConversation._id ? <ChatView /> : <ChatPlaceholder />}
       </div>
-      {/* MOBILE CHAT - shows when isChatOpen is true */}
+
+      {/* MOBILE CHAT */}
       {isChatOpen && (
         <div className="sm:hidden fixed inset-0 w-full z-50 bg-white dark:bg-dark-1">
           {activeConversation._id ? (
@@ -148,6 +180,15 @@ export const Home = () => {
           )}
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={shouldShowConfirmationModal}
+        onConfirm={handleDeleteConversation}
+        onClose={() => {
+          setShouldShowConfirmationModal(false);
+          setConversationToDeleteId(null);
+        }}
+      />
     </div>
   );
 };

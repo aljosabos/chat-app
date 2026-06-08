@@ -46,6 +46,26 @@ export const openConversation = createAsyncThunk<
   }
 });
 
+export const deleteConversation = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: { error: ApiError }; state: RootState }
+>("conversations/delete", async (conversationId, { rejectWithValue }) => {
+  try {
+    await apiFetch(`conversation/${conversationId}`, {
+      method: "DELETE",
+    });
+    // in case of successful deletion, return the deleted conversation ID so we can remove it from the state
+    return conversationId;
+  } catch (err) {
+    const error = isApiError(err)
+      ? err
+      : { status: 500, message: "Network error" };
+
+    return rejectWithValue({ error });
+  }
+});
+
 // get all messages from the specific user (conversation)
 export const getConversationMessages = createAsyncThunk<
   Message[],
