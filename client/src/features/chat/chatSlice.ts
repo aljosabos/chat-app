@@ -6,6 +6,7 @@ import {
   deleteConversation,
   getConversationMessages,
   getConversations,
+  markConversationAsRead,
   openConversation,
   sendMessage,
 } from "./thunks";
@@ -56,6 +57,16 @@ export const chatSlice = createSlice({
 
       if (!existingConversation) {
         state.conversations.unshift(conversation);
+      }
+    },
+
+    updateUnreadCount: (state, action) => {
+      const { conversationId, unreadCount } = action.payload;
+      const conversation = state.conversations.find(
+        (c) => c._id === conversationId
+      );
+      if (conversation) {
+        conversation.unreadCount = unreadCount;
       }
     },
   },
@@ -189,11 +200,41 @@ export const chatSlice = createSlice({
       const updatedConversation = {
         ...state.conversations[activeConversationIndex],
         lastMessage: action.payload,
+        unreadCount: 0, // Reset unread count for sender
       };
       // remove old stale
       state.conversations.splice(activeConversationIndex, 1);
       // put in the beginning
       state.conversations.unshift(updatedConversation);
+    });
+
+    /**** MARK CONVERSATION AS READ  ****/
+    builder.addCase(markConversationAsRead.pending, (state) => {
+      state.status = "pending";
+      state.error = "";
+    });
+
+    builder.addCase(markConversationAsRead.rejected, (state, action) => {
+      state.status = "error";
+      if (action.payload) {
+        state.error = action.payload.error.message;
+      } else {
+        state.error = action.error.message || "Unknown error";
+      }
+    });
+
+    builder.addCase(markConversationAsRead.fulfilled, (state, action) => {
+      state.status = "success";
+      state.error = "";
+
+      const conversationId = action.meta.arg;
+      const conversation = state.conversations.find(
+        (c) => c._id === conversationId
+      );
+
+      if (conversation) {
+        conversation.unreadCount = 0;
+      }
     });
   },
 });
@@ -204,6 +245,7 @@ export const {
   updateMessages,
   updateConversationLastMessage,
   setOnlineUsers,
+  updateUnreadCount,
 } = chatSlice.actions;
 
 export const conversationsSelector = (state: RootState) =>

@@ -1,5 +1,8 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { openConversation } from "@features/chat/thunks";
+import {
+  openConversation,
+  markConversationAsRead,
+} from "@features/chat/thunks";
 import type { Conversation as ConversationType } from "@features/chat/types";
 import { cn } from "@utils/cn";
 import { socket } from "@utils/socket";
@@ -41,15 +44,20 @@ export const Conversation = ({
     if (!receiver?._id) return;
 
     try {
-      const conversation = await dispatch(
+      const openedConversation = await dispatch(
         openConversation(receiver._id),
       ).unwrap();
 
-      socket.emit("join conversation", conversation._id);
+      socket.emit("join conversation", openedConversation._id);
+
+      // Mark conversation as read if there are unread messages
+      if (conversation.unreadCount && conversation.unreadCount > 0) {
+        await dispatch(markConversationAsRead(conversation._id));
+      }
     } catch (err) {
       console.error(err);
     }
-  }, [dispatch, receiver?._id]);
+  }, [dispatch, receiver?._id, conversation._id, conversation.unreadCount]);
 
   const closeMenu = () => {
     setShowMenu(false);
@@ -71,13 +79,20 @@ export const Conversation = ({
       {/* LEFT */}
       {
         <div className="flex gap-x-3 flex-1 min-w-0" onClick={onOpenChat}>
-          <img
-            src={receiver?.picture}
-            alt={receiver?.name}
-            className={cn("w-11 h-11 rounded-full flex-shrink-0", {
-              "border-2 border-[#00a884]": isOnline,
-            })}
-          />
+          <div className="relative">
+            <img
+              src={receiver?.picture}
+              alt={receiver?.name}
+              className={cn("w-11 h-11 rounded-full flex-shrink-0", {
+                "border-2 border-[#00a884]": isOnline,
+              })}
+            />
+            {!!conversation.unreadCount && conversation.unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#00a884] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {conversation.unreadCount > 9 ? "9+" : conversation.unreadCount}
+              </span>
+            )}
+          </div>
 
           <div className="flex flex-col min-w-0 flex-1">
             <h6 className="font-bold leading-6 truncate">{receiver?.name}</h6>

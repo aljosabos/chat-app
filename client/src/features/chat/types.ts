@@ -17,6 +17,7 @@ export interface Conversation {
   lastMessage: Message;
   admin: User;
   createdAt: string;
+  unreadCount?: number;
 }
 
 export interface Message {

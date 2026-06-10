@@ -66,6 +66,29 @@ export const deleteConversation = createAsyncThunk<
   }
 });
 
+export const markConversationAsRead = createAsyncThunk<
+  { unreadCount: number },
+  string,
+  { rejectValue: { error: ApiError }; state: RootState }
+>(
+  "conversations/markAsRead",
+  async (conversationId, { rejectWithValue }) => {
+    try {
+      const data = await apiFetch(`conversation/${conversationId}/mark-read`, {
+        method: "POST",
+      });
+
+      return data;
+    } catch (err) {
+      const error = isApiError(err)
+        ? err
+        : { status: 500, message: "Network error" };
+
+      return rejectWithValue({ error });
+    }
+  }
+);
+
 // get all messages from the specific user (conversation)
 export const getConversationMessages = createAsyncThunk<
   Message[],

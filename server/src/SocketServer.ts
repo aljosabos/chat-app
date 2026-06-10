@@ -49,9 +49,21 @@ export default function SocketServer(socket: Socket, io: Server) {
     conversation.users.forEach((user) => {
       if (String(user._id) === String(message.sender._id)) return;
 
-      socket.in(user._id.toString()).emit("receive message", {
+      const userId = user._id.toString();
+      const unreadCount = conversation.unreadCounts?.get(userId) || 0;
+      const conversationWithUnread = {
+        ...conversation.toObject(),
+        unreadCount,
+      };
+
+      socket.in(userId).emit("receive message", {
         message,
-        conversation,
+        conversation: conversationWithUnread,
+      });
+
+      socket.in(userId).emit("unread count update", {
+        conversationId: conversation._id.toString(),
+        unreadCount,
       });
     });
   });

@@ -16,9 +16,18 @@ import {
   setOnlineUsers,
   updateConversationLastMessage,
   updateMessages,
+  updateUnreadCount,
 } from "@features/chat/chatSlice";
-import { deleteConversation, getConversations } from "@features/chat/thunks";
-import type { Message, OnlineUser, Conversation as ConversationType } from "@features/chat/types";
+import {
+  deleteConversation,
+  getConversations,
+  markConversationAsRead,
+} from "@features/chat/thunks";
+import type {
+  Message,
+  OnlineUser,
+  Conversation as ConversationType,
+} from "@features/chat/types";
 import type { User } from "@features/user/types";
 import { userSelector } from "@features/user/userSlice";
 import { socket } from "@utils/socket";
@@ -34,8 +43,6 @@ export const Home = () => {
   >(null);
   const [shouldShowConfirmationModal, setShouldShowConfirmationModal] =
     useState(false);
-
-  console.log(conversationToDeleteId);
 
   /* For mobile view: whether the chat window is open or we are still on the conversations list */
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -91,21 +98,56 @@ export const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const handleReceiveMessage = ({ message, conversation }: { message: Message; conversation: ConversationType }) => {
+    const handleUnreadCountUpdate = ({
+      conversationId,
+      unreadCount,
+    }: {
+      conversationId: string;
+      unreadCount: number;
+    }) => {
+      dispatch(updateUnreadCount({ conversationId, unreadCount }));
+    };
+
+    socket.on("unread count update", handleUnreadCountUpdate);
+
+    return () => {
+      socket.off("unread count update", handleUnreadCountUpdate);
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    const handleReceiveMessage = ({
+      message,
+      conversation,
+    }: {
+      message: Message;
+      conversation: ConversationType;
+    }) => {
       const isActiveConversation =
         activeConversation._id === message.conversation;
 
       // Check if conversation exists in the list
       const conversationExists = conversations.some(
-        (c) => c._id === conversation._id
+        (c) => c._id === conversation._id,
       );
 
       if (isActiveConversation) {
         // Update messages only for currently open chat window
         dispatch(updateMessages(message));
+        // Mark as read for active conversation
+        dispatch(markConversationAsRead(message.conversation));
       } else {
         // Update preview (lastMessage) for background conversations
         dispatch(updateConversationLastMessage(message));
+        // Update unread count from socket data
+        if (conversation.unreadCount !== undefined) {
+          dispatch(
+            updateUnreadCount({
+              conversationId: conversation._id,
+              unreadCount: conversation.unreadCount,
+            }),
+          );
+        }
       }
 
       // If conversation doesn't exist, add it to the list
@@ -147,6 +189,7 @@ export const Home = () => {
           <NotificationsToggle />
           <ChatSearch search={search} setSearchContacts={setSearch} />
         </div>
+        {/* If contacts are found (when the user searchesfor a contact to create a new conversation with him), display search results; otherwise, display conversations */}
         <div className="min-h-0 flex-1">
           {contacts.length > 0 ? (
             <Contacts contacts={contacts} />
@@ -162,7 +205,6 @@ export const Home = () => {
             />
           )}
         </div>
-        )
       </div>
 
       {/* DESKTOP CHAT ONLY */}

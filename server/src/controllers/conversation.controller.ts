@@ -3,6 +3,7 @@ import { logger } from "../configs/logger.js";
 import createHttpError from "http-errors";
 import { findConversation } from "../utils/conversation.js";
 import { Conversation } from "../models/conversationModel.js";
+import mongoose from "mongoose";
 
 // Get conversation between two users if found, or create a new one if its not found
 export const openConversation = async (
@@ -11,8 +12,12 @@ export const openConversation = async (
   next: NextFunction,
 ) => {
   try {
-    const sender_id = req?.user?.userId;
+    const sender_id = req.user?.userId;
     const receiver_id = req.body.receiver_id;
+
+    if (!sender_id) {
+      throw createHttpError.Unauthorized("User not authenticated");
+    }
 
     // check if receiver_id is provided
     if (!receiver_id) {
@@ -31,7 +36,9 @@ export const openConversation = async (
 
     if (existing_conversation) {
       const parsed_conversation = existing_conversation.toObject();
-      res.json({ ...parsed_conversation });
+      const unreadCount =
+        parsed_conversation.unreadCounts?.get(sender_id.toString()) || 0;
+      res.json({ ...parsed_conversation, unreadCount });
     } else {
       const data = {
         isGroup: false,
@@ -46,8 +53,10 @@ export const openConversation = async (
       ]);
 
       const parsed_conversation = new_conversation.toObject();
+      const unreadCount =
+        parsed_conversation.unreadCounts?.get(sender_id.toString()) || 0;
 
-      res.json({ ...parsed_conversation });
+      res.json({ ...parsed_conversation, unreadCount });
     }
   } catch (error) {
     next(error);
@@ -79,6 +88,10 @@ export const getUserConversations = async (
   try {
     const userId = req.user?.userId;
 
+    if (!userId) {
+      throw createHttpError.Unauthorized("User not authenticated");
+    }
+
     const conversations = await Conversation.find({
       users: { $elemMatch: { $eq: userId } },
     }).populate([
@@ -88,8 +101,55 @@ export const getUserConversations = async (
       },
     ]);
 
-    res.json({ conversations });
+    // Add unreadCount for the current user to each conversation
+    const conversationsWithUnread = conversations.map((conv) => {
+      const convObj = conv.toObject();
+      const unreadCount = convObj.unreadCounts?.get(userId.toString()) || 0;
+      return {
+        ...convObj,
+        unreadCount,
+      };
+    });
+
+    res.json({ conversations: conversationsWithUnread });
   } catch (err) {
     next(err);
+  }
+};
+
+// Mark all messages in conversation as read for current user
+export const markAsRead = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.userId;
+    const conversationId = req.params.id;
+
+    if (!userId) {
+      throw createHttpError.Unauthorized("User not authenticated");
+    }
+
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation) {
+      throw createHttpError.NotFound("Conversation not found");
+    }
+
+    // Check if user is part of the conversation
+    if (!conversation.users.includes(new mongoose.Types.ObjectId(userId))) {
+      throw createHttpError.Forbidden(
+        "You are not a member of this conversation",
+      );
+    }
+
+    // Reset unread count for this user
+    conversation.unreadCounts.set(userId, 0);
+    await conversation.save();
+
+    res.json({ unreadCount: 0 });
+  } catch (error) {
+    next(error);
   }
 };

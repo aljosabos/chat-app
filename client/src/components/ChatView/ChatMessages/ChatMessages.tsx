@@ -1,11 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { getConversationMessages } from "@features/chat/thunks";
+import { getConversationMessages, markConversationAsRead } from "@features/chat/thunks";
 import { useEffect, useRef } from "react";
 import { Message } from "./Message";
 
 export const ChatMessages = () => {
   const dispatch = useAppDispatch();
-  const { messages, activeConversation } = useAppSelector(
+  const { messages, activeConversation, conversations } = useAppSelector(
     (state) => state.chat
   );
   const { user } = useAppSelector((state) => state.user);
@@ -19,6 +19,16 @@ export const ChatMessages = () => {
     };
     getMessages();
   }, [dispatch, activeConversation._id]);
+
+  // Mark conversation as read when viewing messages
+  useEffect(() => {
+    if (!activeConversation._id) return;
+
+    const conversation = conversations.find(c => c._id === activeConversation._id);
+    if (conversation && conversation.unreadCount && conversation.unreadCount > 0) {
+      dispatch(markConversationAsRead(activeConversation._id));
+    }
+  }, [dispatch, activeConversation._id, conversations]);
 
   // scroll to the bottom when the page loads
   useEffect(() => {

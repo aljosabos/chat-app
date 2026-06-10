@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 export const sendMessage = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const sender = req.user?.userId;
@@ -17,7 +17,7 @@ export const sendMessage = async (
 
     if (!sender || !message || !conversationId) {
       throw new createHttpError.BadRequest(
-        "You must provide sender id, message and conversation"
+        "You must provide sender id, message and conversation",
       );
     }
 
@@ -28,7 +28,7 @@ export const sendMessage = async (
 
     if (!conv) {
       throw new createHttpError.Forbidden(
-        "You are not a member of this conversation"
+        "You are not a member of this conversation",
       );
     }
 
@@ -45,9 +45,21 @@ export const sendMessage = async (
       { path: "sender", select: "name email picture status" },
     ]);
 
-    await Conversation.findByIdAndUpdate(conversationId, {
+    // Update last message and increment unread counts for recipients
+    const updateData: Record<string, unknown> = {
       lastMessage: newMessage._id,
+    };
+
+    // Increment unread count for all users except sender
+    conv.users.forEach((user) => {
+      const userId = user.toString();
+      if (userId !== sender) {
+        const currentCount = conv.unreadCounts?.get(userId) || 0;
+        updateData[`unreadCounts.${userId}`] = currentCount + 1;
+      }
     });
+
+    await Conversation.findByIdAndUpdate(conversationId, updateData);
 
     res.status(201).json(newMessage);
   } catch (err) {
@@ -58,7 +70,7 @@ export const sendMessage = async (
 export const getMessages = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { conversation_id } = req.params;

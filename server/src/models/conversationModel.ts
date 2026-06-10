@@ -19,6 +19,12 @@ const conversationSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+
+    unreadCounts: {
+      type: Map,
+      of: Number,
+      default: new Map(),
+    },
   },
   {
     collection: "conversations",
