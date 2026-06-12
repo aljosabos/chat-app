@@ -2,12 +2,16 @@ interface IConfirmationModalProps {
   isOpen?: boolean;
   onClose?: () => void;
   onConfirm?: () => void;
+  title?: string;
+  message?: string;
 }
 
 export const ConfirmationModal = ({
   isOpen,
   onClose,
   onConfirm,
+  title = "Delete conversation?",
+  message = "This action cannot be undone.",
 }: IConfirmationModalProps) => {
   if (!isOpen) return null;
 
@@ -34,11 +38,11 @@ export const ConfirmationModal = ({
         "
       >
         <h3 className="text-lg font-semibold mb-2 text-red-400">
-          Delete conversation?
+          {title}
         </h3>
 
         <p className="text-sm dark:text-dark-text-2 mb-6">
-          This action cannot be undone.
+          {message}
         </p>
 
         <div className="flex justify-end gap-3">

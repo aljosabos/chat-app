@@ -4,6 +4,7 @@ import type { ChatState, Conversation } from "./types";
 import type { RootState } from "@/store";
 import {
   deleteConversation,
+  deleteMessage,
   getConversationMessages,
   getConversations,
   markConversationAsRead,
@@ -68,6 +69,11 @@ export const chatSlice = createSlice({
       if (conversation) {
         conversation.unreadCount = unreadCount;
       }
+    },
+
+    removeMessage: (state, action) => {
+      const messageId = action.payload;
+      state.messages = state.messages.filter((m) => m._id !== messageId);
     },
   },
   // **** GET CONVERSATIONS ***//
@@ -236,6 +242,29 @@ export const chatSlice = createSlice({
         conversation.unreadCount = 0;
       }
     });
+
+    /**** DELETE MESSAGE  ****/
+    builder.addCase(deleteMessage.pending, (state) => {
+      state.status = "pending";
+      state.error = "";
+    });
+
+    builder.addCase(deleteMessage.rejected, (state, action) => {
+      state.status = "error";
+      if (action.payload) {
+        state.error = action.payload.error.message;
+      } else {
+        state.error = action.error.message || "Unknown error";
+      }
+    });
+
+    builder.addCase(deleteMessage.fulfilled, (state, action) => {
+      state.status = "success";
+      state.error = "";
+      state.messages = state.messages.filter(
+        (m) => m._id !== action.payload
+      );
+    });
   },
 });
 
@@ -246,6 +275,7 @@ export const {
   updateConversationLastMessage,
   setOnlineUsers,
   updateUnreadCount,
+  removeMessage,
 } = chatSlice.actions;
 
 export const conversationsSelector = (state: RootState) =>

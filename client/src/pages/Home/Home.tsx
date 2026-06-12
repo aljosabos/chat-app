@@ -17,6 +17,7 @@ import {
   updateConversationLastMessage,
   updateMessages,
   updateUnreadCount,
+  removeMessage,
 } from "@features/chat/chatSlice";
 import {
   deleteConversation,
@@ -162,6 +163,17 @@ export const Home = () => {
       socket.off("receive message", handleReceiveMessage);
     };
   }, [dispatch, activeConversation._id, conversations]);
+
+  useEffect(() => {
+    const handleMessageDeleted = ({ messageId }: { messageId: string }) => {
+      dispatch(removeMessage(messageId));
+    };
+    socket.on("message deleted", handleMessageDeleted);
+
+    return () => {
+      socket.off("message deleted", handleMessageDeleted);
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getConversations());

@@ -151,3 +151,24 @@ export const sendMessage = createAsyncThunk<
     return rejectWithValue({ error });
   }
 });
+
+// delete a message
+export const deleteMessage = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: { error: ApiError }; state: RootState }
+>("messages/delete", async (messageId, { rejectWithValue }) => {
+  try {
+    await apiFetch(`message/${messageId}`, {
+      method: "DELETE",
+    });
+
+    return messageId;
+  } catch (err) {
+    const error = isApiError(err)
+      ? err
+      : { status: 500, message: "Network error" };
+
+    return rejectWithValue({ error });
+  }
+});

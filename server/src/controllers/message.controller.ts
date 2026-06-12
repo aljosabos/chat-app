@@ -92,3 +92,41 @@ export const getMessages = async (
     next(err);
   }
 };
+
+export const deleteMessage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { message_id } = req.params;
+    const userId = req.user?.userId;
+
+    if (!message_id) {
+      throw new createHttpError.BadRequest("You must provide message id");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(message_id)) {
+      throw new createHttpError.BadRequest("Invalid message id");
+    }
+
+    const message = await Message.findById(message_id);
+
+    if (!message) {
+      throw new createHttpError.NotFound("Message not found");
+    }
+
+    // Check if the user is the sender of the message
+    if (!message.sender || message.sender.toString() !== userId) {
+      throw new createHttpError.Forbidden(
+        "You can only delete your own messages",
+      );
+    }
+
+    await Message.findByIdAndDelete(message_id);
+
+    res.json({ message: "Message deleted successfully", messageId: message_id });
+  } catch (err) {
+    next(err);
+  }
+};
