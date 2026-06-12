@@ -1,5 +1,10 @@
 import EmojiIcon from "@icons/Emoji";
-import EmojiPicker, { Theme, type EmojiClickData } from "emoji-picker-react";
+import EmojiPicker, {
+  EmojiStyle,
+  Theme,
+  type EmojiClickData,
+  SkinTonePickerLocation,
+} from "emoji-picker-react";
 
 interface IChatComposerEmojiProps {
   showEmoji: boolean;
@@ -28,7 +33,11 @@ export const ChatComposerEmoji = ({
           <EmojiPicker
             theme={Theme.DARK}
             onEmojiClick={handleEmoji}
-            lazyLoadEmojis
+            lazyLoadEmojis={false}
+            autoFocusSearch={false}
+            emojiStyle={EmojiStyle.NATIVE}
+            skinTonePickerLocation={SkinTonePickerLocation.PREVIEW}
+            previewConfig={{ showPreview: true }}
           />
         )}
       </div>

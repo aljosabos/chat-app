@@ -5,6 +5,9 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [tailwindcss(), react(), tsconfigPaths()],
+  optimizeDeps: {
+    include: ["emoji-picker-react"],
+  },
   server: {
     proxy: {
       "/api": {

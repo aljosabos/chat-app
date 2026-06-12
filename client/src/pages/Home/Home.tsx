@@ -189,7 +189,7 @@ export const Home = () => {
           <NotificationsToggle />
           <ChatSearch search={search} setSearchContacts={setSearch} />
         </div>
-        {/* If contacts are found (when the user searchesfor a contact to create a new conversation with him), display search results; otherwise, display conversations */}
+        {/* If contacts are found (when the user searches for a contact to create a new conversation with him), display search results; otherwise, display conversations */}
         <div className="min-h-0 flex-1">
           {contacts.length > 0 ? (
             <Contacts contacts={contacts} />
