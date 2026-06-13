@@ -11,6 +11,7 @@ interface IMessageProps {
   messageId?: string;
   isOwnMessage?: boolean;
   onDeleteMessage?: (messageId: string) => void;
+  onEditMessage: () => void;
 }
 
 export const Message = ({
@@ -20,6 +21,7 @@ export const Message = ({
   messageId,
   isOwnMessage = false,
   onDeleteMessage,
+  onEditMessage,
 }: IMessageProps) => {
   const isLeft = orientation === "left";
   const [showMenu, setShowMenu] = useState(false);
@@ -35,6 +37,11 @@ export const Message = ({
     if (onDeleteMessage && messageId) {
       onDeleteMessage(messageId);
     }
+    closeMenu();
+  };
+
+  const handleEdit = () => {
+    onEditMessage();
     closeMenu();
   };
 
@@ -82,7 +89,12 @@ export const Message = ({
             setShowMenu((prev) => !prev);
           }}
         />
-        {showMenu && <MessageMenu onDeleteMessage={handleDelete} />}
+        {showMenu && (
+          <MessageMenu
+            onDeleteMessage={handleDelete}
+            onEditMessage={handleEdit}
+          />
+        )}
       </div>
     </div>
   );

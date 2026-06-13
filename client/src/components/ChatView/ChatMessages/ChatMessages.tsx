@@ -8,8 +8,13 @@ import { useEffect, useRef, useState } from "react";
 import { ConfirmationModal } from "@/components/";
 import { Message } from "./Message";
 import { socket } from "@utils/socket";
+import { type Message as MessageType } from "@features/chat/types";
 
-export const ChatMessages = () => {
+interface ChatMessagesProps {
+  setMessageForEdit: React.Dispatch<React.SetStateAction<MessageType | null>>;
+}
+
+export const ChatMessages = ({ setMessageForEdit }: ChatMessagesProps) => {
   const dispatch = useAppDispatch();
   const { messages, activeConversation, conversations } = useAppSelector(
     (state) => state.chat,
@@ -74,7 +79,7 @@ export const ChatMessages = () => {
 
   return (
     <>
-      <div className="w-full h-full mb-[60px] px-6 dark:bg-[url('https://res.cloudinary.com/dmhcnhtng/image/upload/v1677358270/Untitled-1_copy_rpx8yb.jpg')] bg-cover bg-no-repeat bg-center overflow-y-auto scrollbar">
+      <div className="w-full h-full mb-[20px] px-6 dark:bg-[url('https://res.cloudinary.com/dmhcnhtng/image/upload/v1677358270/Untitled-1_copy_rpx8yb.jpg')] bg-cover bg-no-repeat bg-center overflow-y-auto scrollbar">
         {messages?.map((msg) => (
           <Message
             key={msg._id}
@@ -84,6 +89,7 @@ export const ChatMessages = () => {
             messageId={msg._id}
             isOwnMessage={msg.sender._id === currentUserId}
             onDeleteMessage={handleDeleteMessage}
+            onEditMessage={() => setMessageForEdit(msg)}
           />
         ))}
 

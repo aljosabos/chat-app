@@ -3,15 +3,26 @@ import {
   ChatComposerEmoji,
   ChatComposerInput,
 } from ".";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { sendMessage } from "@features/chat/thunks";
 import { useClickOutside } from "@/hooks/useOutsideClick";
 import { socket } from "@utils/socket";
+import type { Message } from "@features/chat/types";
+import { CloseIcon } from "@icons/index";
+import { cn } from "@utils/cn";
 
 type ActivePanel = "emoji" | "attachment" | null;
 
-export const ChatComposer = () => {
+interface ChatComposerProps {
+  messageForEdit: Message | null;
+  setMessageForEdit: React.Dispatch<React.SetStateAction<Message | null>>;
+}
+
+export const ChatComposer = ({
+  messageForEdit,
+  setMessageForEdit,
+}: ChatComposerProps) => {
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
@@ -19,6 +30,7 @@ export const ChatComposer = () => {
   const dispatch = useAppDispatch();
 
   const { activeConversation } = useAppSelector((state) => state.chat);
+  const isEditing = !!messageForEdit;
 
   const msgInputRef = useRef<HTMLInputElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
@@ -73,8 +85,19 @@ export const ChatComposer = () => {
 
   useClickOutside(emojiRef, closePanel);
 
+  useEffect(() => {
+    setMessage(messageForEdit?.message || "");
+  }, [messageForEdit]);
+
   return (
-    <div className="flex items-center h-[65px] shrink-0 dark:bg-dark-2 gap-x-3 px-4 relative">
+    <div
+      className={cn(
+        "flex items-center shrink-0 dark:bg-dark-2 gap-x-3 p-4 relative transition-all duration-50 ease-in-out",
+        {
+          "pt-10": isEditing,
+        },
+      )}
+    >
       <ChatComposerEmoji
         showEmoji={activePanel === "emoji"}
         onToggle={openEmoji}
@@ -89,9 +112,16 @@ export const ChatComposer = () => {
         ref={msgInputRef}
         message={message}
         showLoader={isSending}
+        isEditing={isEditing}
         setMessage={setMessage}
         onSend={handleSendMessage}
       />
+      {isEditing && (
+        <CloseIcon
+          className="dark:fill-dark-svg-2 top-1 right-5 absolute p-1 w-[26px] h-[26px] hover:cursor-pointer"
+          onClick={() => setMessageForEdit(null)}
+        />
+      )}
     </div>
   );
 };
