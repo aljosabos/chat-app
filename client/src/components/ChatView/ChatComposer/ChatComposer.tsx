@@ -49,6 +49,7 @@ export const ChatComposer = ({
             message,
           }),
         ).unwrap();
+        setMessageForEdit(null);
 
         socket.emit("edit message", editedMessage);
       } else {
