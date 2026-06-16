@@ -5,6 +5,7 @@ import type { RootState } from "@/store";
 import {
   deleteConversation,
   deleteMessage,
+  editMessage,
   getConversationMessages,
   getConversations,
   markConversationAsRead,
@@ -34,6 +35,14 @@ export const chatSlice = createSlice({
       state.messages = [...state.messages, action.payload];
     },
 
+    updateMessage: (state, action) => {
+      const updatedMsgIndex = state.messages.findIndex(
+        (msg) => msg._id === action.payload._id,
+      );
+
+      state.messages[updatedMsgIndex] = action.payload;
+    },
+
     updateConversationLastMessage: (state, action) => {
       const conversationId = action.payload.conversation;
 
@@ -53,7 +62,7 @@ export const chatSlice = createSlice({
     addConversation: (state, action) => {
       const conversation = action.payload;
       const existingConversation = state.conversations.find(
-        (c) => c._id === conversation._id
+        (c) => c._id === conversation._id,
       );
 
       if (!existingConversation) {
@@ -64,7 +73,7 @@ export const chatSlice = createSlice({
     updateUnreadCount: (state, action) => {
       const { conversationId, unreadCount } = action.payload;
       const conversation = state.conversations.find(
-        (c) => c._id === conversationId
+        (c) => c._id === conversationId,
       );
       if (conversation) {
         conversation.unreadCount = unreadCount;
@@ -121,7 +130,7 @@ export const chatSlice = createSlice({
 
       // Add new conversation to the list if it doesn't already exist
       const existingConversation = state.conversations.find(
-        (c) => c._id === action.payload._id
+        (c) => c._id === action.payload._id,
       );
 
       if (!existingConversation) {
@@ -235,7 +244,7 @@ export const chatSlice = createSlice({
 
       const conversationId = action.meta.arg;
       const conversation = state.conversations.find(
-        (c) => c._id === conversationId
+        (c) => c._id === conversationId,
       );
 
       if (conversation) {
@@ -261,9 +270,37 @@ export const chatSlice = createSlice({
     builder.addCase(deleteMessage.fulfilled, (state, action) => {
       state.status = "success";
       state.error = "";
-      state.messages = state.messages.filter(
-        (m) => m._id !== action.payload
+      state.messages = state.messages.filter((m) => m._id !== action.payload);
+    });
+
+    // ovde ubaciti
+
+    /**** EDIT MESSAGE  ****/
+    builder.addCase(editMessage.pending, (state) => {
+      state.status = "pending";
+      state.error = "";
+    });
+
+    builder.addCase(editMessage.rejected, (state, action) => {
+      state.status = "error";
+      if (action.payload) {
+        state.error = action.payload.error.message;
+      } else {
+        state.error = action.error.message || "Unknown error";
+      }
+    });
+
+    builder.addCase(editMessage.fulfilled, (state, action) => {
+      state.status = "success";
+      state.error = "";
+
+      const updatedMsgIndex = state.messages.findIndex(
+        (msg) => msg._id === action.payload._id,
       );
+
+      if (updatedMsgIndex !== -1) {
+        state.messages[updatedMsgIndex] = action.payload;
+      }
     });
   },
 });
@@ -271,6 +308,7 @@ export const chatSlice = createSlice({
 export const {
   addConversation,
   setActiveConversation,
+  updateMessage,
   updateMessages,
   updateConversationLastMessage,
   setOnlineUsers,

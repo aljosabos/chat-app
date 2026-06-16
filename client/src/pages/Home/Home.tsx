@@ -15,6 +15,7 @@ import {
   addConversation,
   setOnlineUsers,
   updateConversationLastMessage,
+  updateMessage,
   updateMessages,
   updateUnreadCount,
   removeMessage,
@@ -172,6 +173,17 @@ export const Home = () => {
 
     return () => {
       socket.off("message deleted", handleMessageDeleted);
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    const handleMessageEdited = (msg: Message) => {
+      dispatch(updateMessage(msg));
+    };
+    socket.on("message edited", handleMessageEdited);
+
+    return () => {
+      socket.off("message edited", handleMessageEdited);
     };
   }, [dispatch]);
 

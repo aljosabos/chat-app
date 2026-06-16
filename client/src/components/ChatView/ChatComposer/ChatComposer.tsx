@@ -5,7 +5,7 @@ import {
 } from ".";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { sendMessage } from "@features/chat/thunks";
+import { editMessage, sendMessage } from "@features/chat/thunks";
 import { useClickOutside } from "@/hooks/useOutsideClick";
 import { socket } from "@utils/socket";
 import type { Message } from "@features/chat/types";
@@ -24,7 +24,7 @@ export const ChatComposer = ({
   setMessageForEdit,
 }: ChatComposerProps) => {
   const [message, setMessage] = useState("");
-  const [isSending, setIsSending] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
 
   const dispatch = useAppDispatch();
@@ -35,23 +35,35 @@ export const ChatComposer = ({
   const msgInputRef = useRef<HTMLInputElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
 
-  const handleSendMessage = useCallback(async () => {
+  // Handle submit for both sending and editing messages
+  const handleSubmit = useCallback(async () => {
     if (!message.trim()) return;
 
     try {
-      setIsSending(true);
+      setIsSubmitting(true);
 
-      const newMessage = await dispatch(
-        sendMessage({ conversationId: activeConversation._id, message }),
-      );
+      if (isEditing) {
+        const editedMessage = await dispatch(
+          editMessage({
+            message_id: messageForEdit?._id,
+            message,
+          }),
+        ).unwrap();
 
-      socket.emit("send message", newMessage.payload);
+        socket.emit("edit message", editedMessage);
+      } else {
+        const newMessage = await dispatch(
+          sendMessage({ conversationId: activeConversation._id, message }),
+        );
+        socket.emit("send message", newMessage.payload);
+      }
+
       setMessage("");
       setActivePanel(null);
     } finally {
-      setIsSending(false);
+      setIsSubmitting(false);
     }
-  }, [activeConversation._id, message, dispatch]);
+  }, [activeConversation._id, message, isEditing, messageForEdit, dispatch]);
 
   const handleAddEmoji = (emoji: string) => {
     const msgInput = msgInputRef.current;
@@ -111,10 +123,10 @@ export const ChatComposer = ({
       <ChatComposerInput
         ref={msgInputRef}
         message={message}
-        showLoader={isSending}
+        showLoader={isSubmitting}
         isEditing={isEditing}
         setMessage={setMessage}
-        onSend={handleSendMessage}
+        onSubmit={handleSubmit}
       />
       {isEditing && (
         <CloseIcon

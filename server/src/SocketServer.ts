@@ -43,7 +43,6 @@ export default function SocketServer(socket: Socket, io: Server) {
       { path: "lastMessage" },
     ]);
 
-    console.log("socket server", conversation);
     if (!conversation?.users) return;
 
     conversation.users.forEach((user) => {
@@ -69,9 +68,18 @@ export default function SocketServer(socket: Socket, io: Server) {
   });
 
   // delete message
-  socket.on("delete message", (data: { messageId: string; conversationId: string }) => {
-    const { messageId, conversationId } = data;
+  socket.on(
+    "delete message",
+    (data: { messageId: string; conversationId: string }) => {
+      const { messageId, conversationId } = data;
+      // Emit to everyone in the conversation room
+      socket.to(conversationId).emit("message deleted", { messageId });
+    },
+  );
+
+  // edit a  message
+  socket.on("edit message", async (msg) => {
     // Emit to everyone in the conversation room
-    socket.to(conversationId).emit("message deleted", { messageId });
+    socket.to(msg.conversation).emit("message edited", msg);
   });
 }

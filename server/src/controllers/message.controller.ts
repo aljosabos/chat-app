@@ -102,10 +102,6 @@ export const deleteMessage = async (
     const { message_id } = req.params;
     const userId = req.user?.userId;
 
-    if (!message_id) {
-      throw new createHttpError.BadRequest("You must provide message id");
-    }
-
     if (!mongoose.Types.ObjectId.isValid(message_id)) {
       throw new createHttpError.BadRequest("Invalid message id");
     }
@@ -116,8 +112,7 @@ export const deleteMessage = async (
       throw new createHttpError.NotFound("Message not found");
     }
 
-    // Check if the user is the sender of the message
-    if (!message.sender || message.sender.toString() !== userId) {
+    if (message.sender?.toString() !== userId) {
       throw new createHttpError.Forbidden(
         "You can only delete your own messages",
       );
@@ -125,7 +120,56 @@ export const deleteMessage = async (
 
     await Message.findByIdAndDelete(message_id);
 
-    res.json({ message: "Message deleted successfully", messageId: message_id });
+    res.status(200).json({
+      success: true,
+      message: "Message deleted",
+      messageId: message_id,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const editMessage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { message_id } = req.params;
+    const { message: text } = req.body;
+    const userId = req.user?.userId;
+
+    if (!mongoose.Types.ObjectId.isValid(message_id)) {
+      throw new createHttpError.BadRequest("Invalid message id");
+    }
+
+    if (!text?.trim()) {
+      throw new createHttpError.BadRequest("Message text cannot be empty");
+    }
+
+    const msg = await Message.findById(message_id);
+
+    if (!msg) {
+      throw new createHttpError.NotFound("Message not found");
+    }
+
+    if (!msg.sender?.toString()) {
+      throw new createHttpError.InternalServerError("Invalid message sender");
+    }
+
+    if (msg.sender.toString() !== userId) {
+      throw new createHttpError.Forbidden(
+        "You can only edit your own messages",
+      );
+    }
+
+    msg.message = text.trim();
+
+    await msg.save();
+    await msg.populate("sender", "name email picture status");
+
+    res.status(200).json(msg);
   } catch (err) {
     next(err);
   }

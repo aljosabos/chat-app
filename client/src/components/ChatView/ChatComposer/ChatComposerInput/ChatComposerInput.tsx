@@ -8,7 +8,7 @@ interface IChatComposerInputProps {
   showLoader: boolean;
   isEditing: boolean;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
-  onSend: () => void;
+  onSubmit: () => void;
   ref: React.RefObject<HTMLInputElement | null>;
 }
 
@@ -17,12 +17,12 @@ export const ChatComposerInput = ({
   showLoader,
   isEditing,
   setMessage,
-  onSend,
+  onSubmit,
   ref,
 }: IChatComposerInputProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSend();
+    onSubmit();
   };
   return (
     <form className="flex flex-1 relative" onSubmit={handleSubmit}>

@@ -70,24 +70,21 @@ export const markConversationAsRead = createAsyncThunk<
   { unreadCount: number },
   string,
   { rejectValue: { error: ApiError }; state: RootState }
->(
-  "conversations/markAsRead",
-  async (conversationId, { rejectWithValue }) => {
-    try {
-      const data = await apiFetch(`conversation/${conversationId}/mark-read`, {
-        method: "POST",
-      });
+>("conversations/markAsRead", async (conversationId, { rejectWithValue }) => {
+  try {
+    const data = await apiFetch(`conversation/${conversationId}/mark-read`, {
+      method: "POST",
+    });
 
-      return data;
-    } catch (err) {
-      const error = isApiError(err)
-        ? err
-        : { status: 500, message: "Network error" };
+    return data;
+  } catch (err) {
+    const error = isApiError(err)
+      ? err
+      : { status: 500, message: "Network error" };
 
-      return rejectWithValue({ error });
-    }
+    return rejectWithValue({ error });
   }
-);
+});
 
 // get all messages from the specific user (conversation)
 export const getConversationMessages = createAsyncThunk<
@@ -164,6 +161,29 @@ export const deleteMessage = createAsyncThunk<
     });
 
     return messageId;
+  } catch (err) {
+    const error = isApiError(err)
+      ? err
+      : { status: 500, message: "Network error" };
+
+    return rejectWithValue({ error });
+  }
+});
+
+// edit a message
+export const editMessage = createAsyncThunk<
+  Message,
+  { message_id: string; message: string },
+  { rejectValue: { error: ApiError }; state: RootState }
+>("messages/edit", async (values, { rejectWithValue }) => {
+  const { message_id, message } = values;
+  try {
+    const data = await apiFetch(`message/${message_id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ message }),
+    });
+
+    return data;
   } catch (err) {
     const error = isApiError(err)
       ? err
