@@ -26,6 +26,8 @@ import CallIcon from "./Call";
 import MuteIcon from "./Mute";
 import NoVideoIcon from "./NoVideo";
 import CheckIcon from "./Check";
+import { EyeIcon } from "./Eye";
+import { EyeOffIcon } from "./EyeOff";
 export {
   CommunityIcon,
   StoryIcon,
@@ -55,4 +57,6 @@ export {
   MuteIcon,
   NoVideoIcon,
   CheckIcon,
+  EyeIcon,
+  EyeOffIcon,
 };

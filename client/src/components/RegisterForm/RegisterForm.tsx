@@ -8,12 +8,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FileUpload } from "@components/FileUpload/FileUpload";
 import { registerUser } from "@features/user/thunks";
+import { EyeIcon, EyeOffIcon } from "@icons/index";
 
 export const RegisterForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [picture, setPicture] = useState<File | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { authStatus, error } = useAppSelector((state) => state.user);
 
@@ -80,12 +82,27 @@ export const RegisterForm = () => {
             register={register}
           />
 
-          <Input
-            name="password"
-            placeholder="Password"
-            error={errors.password?.message}
-            register={register}
-          />
+          <div className="relative">
+            <Input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              error={errors.password?.message}
+              register={register}
+              className="pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-dark-text-4 hover:text-gray-700 dark:hover:text-dark-text-2 transition-colors focus:outline-none"
+            >
+              {showPassword ? (
+                <EyeOffIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
+            </button>
+          </div>
 
           <FileUpload onFileSelect={(pic) => setPicture(pic)} />
 

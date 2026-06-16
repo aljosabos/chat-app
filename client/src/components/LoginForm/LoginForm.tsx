@@ -6,10 +6,13 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { PulseLoader } from "react-spinners";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "@features/user/thunks";
+import { useState } from "react";
+import { EyeIcon, EyeOffIcon } from "@icons/index";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [showPassword, setShowPassword] = useState(false);
 
   const { authStatus, error } = useAppSelector((state) => state.user);
 
@@ -50,12 +53,27 @@ export const LoginForm = () => {
             register={register}
           />
 
-          <Input
-            name="password"
-            placeholder="Password"
-            error={errors.password?.message}
-            register={register}
-          />
+          <div className="relative">
+            <Input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              error={errors.password?.message}
+              register={register}
+              className="pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-dark-text-4 hover:text-gray-700 dark:hover:text-dark-text-2 transition-colors focus:outline-none"
+            >
+              {showPassword ? (
+                <EyeOffIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
+            </button>
+          </div>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
