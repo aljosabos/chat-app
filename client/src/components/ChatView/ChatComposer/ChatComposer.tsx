@@ -64,7 +64,14 @@ export const ChatComposer = ({
     } finally {
       setIsSubmitting(false);
     }
-  }, [activeConversation._id, message, isEditing, messageForEdit, dispatch]);
+  }, [
+    activeConversation._id,
+    message,
+    isEditing,
+    messageForEdit,
+    setMessageForEdit,
+    dispatch,
+  ]);
 
   const handleAddEmoji = (emoji: string) => {
     const msgInput = msgInputRef.current;
