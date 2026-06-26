@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 
-export const useVideoThumbnail = (videoUrl: string | null) => {
+export const useVideoThumbnail = (videoUrl: string | null, fileType?: string) => {
   const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
-    if (!videoUrl) return;
+    // Early return if not a video or no URL
+    if (!videoUrl || !fileType?.startsWith("video/")) return;
 
     const video = document.createElement("video");
     video.src = videoUrl;
     video.crossOrigin = "anonymous";
-    video.preload = "metadata";
+    video.preload = "auto";
     video.muted = true;
     video.playsInline = true;
 
@@ -24,10 +26,12 @@ export const useVideoThumbnail = (videoUrl: string | null) => {
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
       video.removeEventListener("seeked", onSeeked);
       video.removeEventListener("error", onError);
+      video.removeEventListener("canplay", onCanPlay);
       if (video.parentNode) {
         video.parentNode.removeChild(video);
       }
       video.src = "";
+      video.load();
     };
 
     const onLoadedMetadata = () => {
@@ -44,8 +48,9 @@ export const useVideoThumbnail = (videoUrl: string | null) => {
         canvas.width = video.videoWidth || 320;
         canvas.height = video.videoHeight || 240;
 
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
         if (!ctx) {
+          setError(true);
           cleanup();
           return;
         }
@@ -58,27 +63,37 @@ export const useVideoThumbnail = (videoUrl: string | null) => {
 
         const imageUrl = canvas.toDataURL("image/jpeg", 0.8);
         setThumbnail(imageUrl);
+        setError(false);
         cleanup();
       } catch (error) {
         console.error("Error generating video thumbnail:", error);
+        setError(true);
         cleanup();
       }
     };
 
+    const onCanPlay = () => {
+      if (video.readyState >= 2 && !thumbnail && !error) {
+        onLoadedMetadata();
+      }
+    };
+
     const onError = (e: Event) => {
-      console.error("Video error:", e);
+      console.error("Video error:", e, (e.target as HTMLVideoElement)?.error);
+      setError(true);
       cleanup();
     };
 
     video.addEventListener("loadedmetadata", onLoadedMetadata);
     video.addEventListener("seeked", onSeeked);
     video.addEventListener("error", onError);
+    video.addEventListener("canplay", onCanPlay);
 
     // Store reference for cleanup on effect re-run
     videoRef.current = video;
 
     return cleanup;
-  }, [videoUrl]);
+  }, [videoUrl, fileType, thumbnail, error]);
 
   // Cleanup on unmount
   useEffect(() => {

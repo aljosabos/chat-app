@@ -38,7 +38,7 @@ export const ChatComposer = ({
     useState<AttachmentType>(null);
   const dispatch = useAppDispatch();
 
-  const thumb = useVideoThumbnail(previewUrl);
+  const thumb = useVideoThumbnail(previewUrl, selectedFile?.type);
 
   const { activeConversation } = useAppSelector((state) => state.chat);
   const isEditing = !!messageForEdit;
@@ -204,8 +204,6 @@ export const ChatComposer = ({
       setActivePanel(null);
     }
   }, [activeAttachmentType]);
-
-  console.log(selectedFile?.type);
 
   return (
     <div>

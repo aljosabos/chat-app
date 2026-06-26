@@ -8,6 +8,20 @@ export default defineConfig({
   optimizeDeps: {
     include: ["emoji-picker-react"],
   },
+  base: "/", // Ensure assets are served from root
+  build: {
+    outDir: "dist",
+    assetsDir: "assets",
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          ui: ["@reduxjs/toolkit", "react-redux"],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       "/api": {
