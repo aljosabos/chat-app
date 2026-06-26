@@ -11,8 +11,12 @@ import { socket } from "@utils/socket";
 import type { Message } from "@features/chat/types";
 import { CloseIcon } from "@icons/index";
 import { cn } from "@utils/cn";
-
-type ActivePanel = "emoji" | "attachment" | null;
+import type { ActivePanel, AttachmentType } from "./ChatComposer.types";
+import { acceptMap, maxSizeMap } from "./ChatComposer.constants";
+import { apiFetch } from "@utils/api";
+import { formatMB, getFileType } from "./ChatComposer.helpers";
+import { useVideoThumbnail } from "@/hooks/useVideoThumbnail";
+import { FilePreview } from "./FIlePreview/FilePreview";
 
 interface ChatComposerProps {
   messageForEdit: Message | null;
@@ -24,20 +28,29 @@ export const ChatComposer = ({
   setMessageForEdit,
 }: ChatComposerProps) => {
   const [message, setMessage] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [activeAttachmentType, setActiveAttachmentType] =
+    useState<AttachmentType>(null);
   const dispatch = useAppDispatch();
+
+  const thumb = useVideoThumbnail(previewUrl);
 
   const { activeConversation } = useAppSelector((state) => state.chat);
   const isEditing = !!messageForEdit;
 
   const msgInputRef = useRef<HTMLInputElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
+  const composerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Handle submit for both sending and editing messages
   const handleSubmit = useCallback(async () => {
-    if (!message.trim()) return;
+    if (!message.trim() && !selectedFile) return;
 
     try {
       setIsSubmitting(true);
@@ -53,9 +66,43 @@ export const ChatComposer = ({
 
         socket.emit("edit message", editedMessage);
       } else {
+        // url of uploaded file to cloudinary
+        let cloudinaryUrl: string | null = null;
+
+        // 1. upload file to cloudinary and retreive url
+        if (selectedFile) {
+          setIsUploading(true);
+          const formData = new FormData();
+          formData.append("file", selectedFile);
+          const res = await apiFetch("upload", {
+            method: "POST",
+            body: formData,
+          });
+          cloudinaryUrl = res.url;
+          setIsUploading(false);
+        }
+
+        // sending message with fileUrl if attached
         const newMessage = await dispatch(
-          sendMessage({ conversationId: activeConversation._id, message }),
+          sendMessage({
+            conversationId: activeConversation._id,
+            message,
+            files: cloudinaryUrl
+              ? [
+                  {
+                    url: cloudinaryUrl,
+                    name: selectedFile!.name,
+                    type: getFileType(selectedFile!.type),
+                  },
+                ]
+              : [],
+          }),
         );
+        if (selectedFile) {
+          setSelectedFile(null);
+          setPreviewUrl(null);
+          setActiveAttachmentType(null);
+        }
         socket.emit("send message", newMessage.payload);
       }
 
@@ -69,6 +116,7 @@ export const ChatComposer = ({
     message,
     isEditing,
     messageForEdit,
+    selectedFile,
     setMessageForEdit,
     dispatch,
   ]);
@@ -103,45 +151,117 @@ export const ChatComposer = ({
 
   const closePanel = () => setActivePanel(null);
 
-  useClickOutside(emojiRef, closePanel);
+  const handleSelectAttachment = (type: AttachmentType) => {
+    setActiveAttachmentType(type);
+  };
+
+  const openFilePicker = (type: AttachmentType) => {
+    const input = fileInputRef.current;
+    if (!input || !type) return;
+
+    input.accept = acceptMap[type];
+    input.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !activeAttachmentType) return;
+
+    setError(null);
+    const maxSize = maxSizeMap[activeAttachmentType];
+
+    if (file.size > maxSize) {
+      setError(
+        `File too large. Max allowed for ${activeAttachmentType} is ${formatMB(maxSize)}`,
+      );
+      e.target.value = "";
+      return;
+    }
+
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    e.target.value = "";
+  };
+
+  const handleFileRemove = () => {
+    if (!previewUrl) return;
+    URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    setSelectedFile(null);
+    setActiveAttachmentType(null);
+    setError(null);
+  };
+
+  useClickOutside(composerRef, closePanel);
 
   useEffect(() => {
     setMessage(messageForEdit?.message || "");
   }, [messageForEdit]);
 
+  useEffect(() => {
+    if (activeAttachmentType) {
+      openFilePicker(activeAttachmentType);
+      setActivePanel(null);
+    }
+  }, [activeAttachmentType]);
+
+  console.log(selectedFile?.type);
+
   return (
-    <div
-      className={cn(
-        "flex items-center shrink-0 dark:bg-dark-2 gap-x-3 p-4 relative transition-all duration-50 ease-in-out",
-        {
-          "pt-10": isEditing,
-        },
-      )}
-    >
-      <ChatComposerEmoji
-        showEmoji={activePanel === "emoji"}
-        onToggle={openEmoji}
-        onSelectEmoji={handleAddEmoji}
-        ref={emojiRef}
-      />
-      <ChatComposerAttachment
-        showAttachment={activePanel === "attachment"}
-        onToggle={openAttachment}
-      />
-      <ChatComposerInput
-        ref={msgInputRef}
-        message={message}
-        showLoader={isSubmitting}
-        isEditing={isEditing}
-        setMessage={setMessage}
-        onSubmit={handleSubmit}
-      />
-      {isEditing && (
-        <CloseIcon
-          className="dark:fill-dark-svg-2 top-1 right-5 absolute p-1 w-[26px] h-[26px] hover:cursor-pointer"
-          onClick={() => setMessageForEdit(null)}
+    <div>
+      {error && <p className="text-red-300 px-24">{error}</p>}
+      {previewUrl && (
+        <FilePreview
+          selectedFile={selectedFile}
+          previewUrl={previewUrl}
+          thumb={thumb}
+          onFileRemove={handleFileRemove}
         />
       )}
+      <div
+        className={cn(
+          "flex items-center shrink-0 dark:bg-dark-2 gap-x-3 p-4 relative transition-all duration-50 ease-in-out",
+          {
+            "pt-10": isEditing,
+          },
+        )}
+        ref={composerRef}
+      >
+        <ChatComposerEmoji
+          showEmoji={activePanel === "emoji"}
+          onToggle={openEmoji}
+          onSelectEmoji={handleAddEmoji}
+          ref={emojiRef}
+        />
+        <ChatComposerAttachment
+          showAttachment={activePanel === "attachment"}
+          onToggle={openAttachment}
+          onSelectAttachment={handleSelectAttachment}
+          disabled={isSubmitting || isUploading}
+        />
+        <ChatComposerInput
+          message={message}
+          showLoader={isSubmitting || isUploading}
+          isEditing={isEditing}
+          disabled={!message.trim() && !selectedFile}
+          setMessage={setMessage}
+          onSubmit={handleSubmit}
+          ref={msgInputRef}
+        />
+
+        {isEditing && (
+          <CloseIcon
+            className="dark:fill-dark-svg-2 top-1 right-5 absolute p-1 w-[26px] h-[26px] hover:cursor-pointer"
+            onClick={() => setMessageForEdit(null)}
+          />
+        )}
+        <input
+          type="file"
+          hidden
+          ref={fileInputRef}
+          onChange={handleFileChange}
+        />
+      </div>
     </div>
   );
 };

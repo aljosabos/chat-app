@@ -3,21 +3,8 @@ import { User } from "../models/index.js";
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import createHttpError from "http-errors";
-import { v2 as cloudinary } from "cloudinary";
 import { Resend } from "resend";
-
-const uploadToCloudinary = (fileBuffer: Buffer): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "users" },
-      (error, result) => {
-        if (error) reject(error);
-        else resolve(result?.secure_url || "");
-      },
-    );
-    stream.end(fileBuffer);
-  });
-};
+import { uploadToCloudinary } from "../utils/upload.js";
 
 export const register = async (
   req: Request,
@@ -28,7 +15,11 @@ export const register = async (
     const userData = { ...req.body };
 
     if (req.file) {
-      const imageUrl = await uploadToCloudinary(req.file.buffer);
+      const imageUrl = await uploadToCloudinary(
+        req.file.buffer,
+        "users",
+        "image",
+      );
       userData.picture = imageUrl;
     }
 

@@ -3,6 +3,7 @@ import authRoutes from "./auth.route.js";
 import conversationRoutes from "./conversation.route.js";
 import messageRoutes from "./message.route.js";
 import userRoutes from "./user.route.js";
+import uploadRoutes from "./upload.route.js";
 
 const router = express.Router();
 
@@ -10,5 +11,6 @@ router.use("/auth", authRoutes);
 router.use("/conversation", conversationRoutes);
 router.use("/message", messageRoutes);
 router.use("/user", userRoutes);
+router.use("/upload", uploadRoutes);
 
 export default router;

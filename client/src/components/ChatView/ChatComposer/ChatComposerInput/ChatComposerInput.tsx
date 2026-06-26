@@ -7,6 +7,7 @@ interface IChatComposerInputProps {
   message: string;
   showLoader: boolean;
   isEditing: boolean;
+  disabled: boolean;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: () => void;
   ref: React.RefObject<HTMLInputElement | null>;
@@ -16,6 +17,7 @@ export const ChatComposerInput = ({
   message,
   showLoader,
   isEditing,
+  disabled,
   setMessage,
   onSubmit,
   ref,
@@ -46,7 +48,7 @@ export const ChatComposerInput = ({
       )}
       <button
         type="submit"
-        disabled={!message.trim()}
+        disabled={disabled}
         className="
     p-2 rounded-md transition
     hover:bg-gray-200 dark:hover:bg-dark-hover-2

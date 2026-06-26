@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+const fileSchema = new mongoose.Schema(
+  {
+    url: { type: String },
+    type: { type: String },
+    name: { type: String },
+  },
+  { _id: false },
+);
+
 const messageSchema = new mongoose.Schema(
   {
     sender: {
@@ -17,12 +26,12 @@ const messageSchema = new mongoose.Schema(
       ref: "Conversation",
     },
 
-    files: [],
+    files: [fileSchema],
   },
   {
     collection: "messages",
     timestamps: true,
-  }
+  },
 );
 
 export const Message = mongoose.model("Message", messageSchema);

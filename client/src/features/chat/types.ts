@@ -25,9 +25,15 @@ export interface Message {
   sender: User;
   message: string;
   conversation: string;
-  files: File[];
+  files: FileType[];
   createdAt: string;
 }
+
+export type FileType = {
+  url: string;
+  name?: string;
+  type?: string;
+};
 
 export interface ConversationsResponse {
   conversations: Conversation[];

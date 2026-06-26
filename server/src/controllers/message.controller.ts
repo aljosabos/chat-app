@@ -11,13 +11,17 @@ export const sendMessage = async (
 ) => {
   try {
     const sender = req.user?.userId;
-    const { message, conversationId } = req.body;
+    const { message, files, conversationId } = req.body;
 
-    const files = req.files as Express.Multer.File[];
-
-    if (!sender || !message || !conversationId) {
+    if (!sender || !conversationId) {
       throw new createHttpError.BadRequest(
-        "You must provide sender id, message and conversation",
+        "You must provide sender id and conversation",
+      );
+    }
+
+    if (!message?.trim() && (!files || files.length === 0)) {
+      throw new createHttpError.BadRequest(
+        "Message must contain text or at least one file",
       );
     }
 
@@ -32,13 +36,11 @@ export const sendMessage = async (
       );
     }
 
-    const fileUrls = files?.map((file) => file.originalname) || [];
-
     const newMessage = await Message.create({
       sender,
       message,
       conversation: conversationId,
-      files: fileUrls,
+      files,
     });
 
     await newMessage.populate([

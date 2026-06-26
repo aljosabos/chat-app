@@ -2,38 +2,55 @@ import { useState } from "react";
 
 interface FileUploadProps {
   onFileSelect: (file: File | null) => void;
+  allowedTypes?: string[];
+  maxSizeMB?: number;
+  showPreview?: boolean;
+  label?: string;
 }
 
-export const FileUpload = ({ onFileSelect }: FileUploadProps) => {
+export const FileUpload = ({
+  onFileSelect,
+  allowedTypes = ["image/jpeg", "image/png", "image/webp"],
+  maxSizeMB = 10,
+  showPreview = true,
+  label = "Select file",
+}: FileUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string>();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const image = e.target.files?.[0];
+    const selectedFile = e.target.files?.[0];
 
-    if (image) {
-      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!selectedFile) return;
 
-      if (!allowedTypes.includes(image.type)) {
-        setError("Invalid file type!");
-        return;
-      }
+    setError(undefined);
 
-      if (image.size > 5 * 1024 * 1024) {
-        setError("File too large! Max 5MB");
-        return;
-      }
+    if (!allowedTypes.includes(selectedFile.type)) {
+      setError("Invalid file type!");
+      return;
+    }
 
-      setPreview(URL.createObjectURL(image));
-      setFile(image);
-      onFileSelect(image);
+    if (selectedFile.size > maxSizeMB * 1024 * 1024) {
+      setError(`File too large! Max ${maxSizeMB}MB`);
+      return;
+    }
+
+    setFile(selectedFile);
+    onFileSelect(selectedFile);
+
+    // preview samo ako treba
+    if (showPreview && selectedFile.type.startsWith("image/")) {
+      setPreview(URL.createObjectURL(selectedFile));
+    } else {
+      setPreview(null);
     }
   };
 
   const handleFileRemove = () => {
     setFile(null);
     setPreview(null);
+    setError(undefined);
     onFileSelect(null);
   };
 
@@ -41,7 +58,7 @@ export const FileUpload = ({ onFileSelect }: FileUploadProps) => {
     <div className="text-white text-sm mt-8 dark:bg-dark-6 p-4 rounded-xl">
       {!file ? (
         <label htmlFor="picture" className="cursor-pointer w-full block p-1">
-          Select image
+          {label}
         </label>
       ) : (
         <button
@@ -56,15 +73,13 @@ export const FileUpload = ({ onFileSelect }: FileUploadProps) => {
 
       <input
         type="file"
-        accept="image/jpeg, image/png, image/webp, .jpg, .jpeg, .png, .webp"
-        name="picture"
+        accept={allowedTypes.join(",")}
         id="picture"
         hidden
-        className="w-full"
         onChange={handleFileChange}
       />
 
-      {preview && (
+      {showPreview && preview && (
         <img
           src={preview}
           alt="Preview"

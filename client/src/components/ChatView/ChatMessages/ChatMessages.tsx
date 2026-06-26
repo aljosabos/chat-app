@@ -6,7 +6,7 @@ import {
 } from "@features/chat/thunks";
 import { useEffect, useRef, useState } from "react";
 import { ConfirmationModal } from "@/components/";
-import { Message } from "./Message";
+import { Message } from "./Message/Message";
 import { socket } from "@utils/socket";
 import { type Message as MessageType } from "@features/chat/types";
 
@@ -84,6 +84,7 @@ export const ChatMessages = ({ setMessageForEdit }: ChatMessagesProps) => {
           <Message
             key={msg._id}
             message={msg.message}
+            files={msg.files}
             createdAt={msg.createdAt}
             orientation={msg.sender._id === currentUserId ? "right" : "left"}
             messageId={msg._id}
