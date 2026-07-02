@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { Message } from "../models/messageModel.js";
 import { Conversation } from "../models/conversationModel.js";
+import { deleteFromCloudinary } from "../utils/upload.js";
 import mongoose from "mongoose";
 
 export const sendMessage = async (
@@ -117,6 +118,22 @@ export const deleteMessage = async (
     if (message.sender?.toString() !== userId) {
       throw new createHttpError.Forbidden(
         "You can only delete your own messages",
+      );
+    }
+
+    // Delete files from Cloudinary if message has attachments
+    if (message.files && message.files.length > 0) {
+      await Promise.all(
+        message.files.map(async (file) => {
+          if (file.publicId && file.resourceType) {
+            await deleteFromCloudinary(file.publicId, file.resourceType);
+          } else {
+            console.warn(
+              "File missing publicId or resourceType, cannot delete:",
+              file.url,
+            );
+          }
+        }),
       );
     }
 

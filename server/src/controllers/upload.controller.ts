@@ -22,14 +22,16 @@ export const uploadFile = async (
     const folderName = getFolderName(req.file.mimetype);
     const resourceType = getResourceType(req.file);
 
-    const fileUrl = await uploadToCloudinary(
+    const uploadResult = await uploadToCloudinary(
       req.file.buffer,
       folderName,
       resourceType,
     );
 
     res.json({
-      url: fileUrl,
+      url: uploadResult.url,
+      publicId: uploadResult.publicId,
+      resourceType: uploadResult.resourceType,
     });
     return;
   } catch (err) {

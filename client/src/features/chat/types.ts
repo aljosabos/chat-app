@@ -31,6 +31,8 @@ export interface Message {
 
 export type FileType = {
   url: string;
+  publicId: string;
+  resourceType: string;
   name?: string;
   type?: string;
 };

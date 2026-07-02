@@ -67,7 +67,7 @@ export const ChatComposer = ({
         socket.emit("edit message", editedMessage);
       } else {
         // url of uploaded file to cloudinary
-        let cloudinaryUrl: string | null = null;
+        let uploadResult: { url: string; publicId: string; resourceType: string } | null = null;
 
         // 1. upload file to cloudinary and retreive url
         if (selectedFile) {
@@ -78,7 +78,11 @@ export const ChatComposer = ({
             method: "POST",
             body: formData,
           });
-          cloudinaryUrl = res.url;
+          uploadResult = {
+            url: res.url,
+            publicId: res.publicId,
+            resourceType: res.resourceType,
+          };
           setIsUploading(false);
         }
 
@@ -87,10 +91,12 @@ export const ChatComposer = ({
           sendMessage({
             conversationId: activeConversation._id,
             message,
-            files: cloudinaryUrl
+            files: uploadResult
               ? [
                   {
-                    url: cloudinaryUrl,
+                    url: uploadResult.url,
+                    publicId: uploadResult.publicId,
+                    resourceType: uploadResult.resourceType,
                     name: selectedFile!.name,
                     type: getFileType(selectedFile!.type),
                   },

@@ -7,13 +7,40 @@ type UploadFolderType =
   | "chat/documents"
   | "chat/others";
 
-type ResourceType = "image" | "video" | "raw";
+type ResourceType = "image" | "video" | "raw" | "auto";
+
+export interface UploadResult {
+  url: string;
+  publicId: string;
+  resourceType: ResourceType;
+}
+
+/**
+ * Delete a file from Cloudinary by its public ID
+ */
+export const deleteFromCloudinary = async (
+  publicId: string,
+  resourceType: string,
+): Promise<void> => {
+  try {
+    console.log("Attempting to delete from Cloudinary:", {
+      publicId,
+      resourceType,
+    });
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
+  } catch (error) {
+    console.error("Failed to delete file from Cloudinary:", error);
+    // Don't throw error to allow message deletion to proceed even if cloudinary deletion fails
+  }
+};
 
 export const uploadToCloudinary = (
   fileBuffer: Buffer,
   folderName: UploadFolderType,
   resourceType: ResourceType,
-): Promise<string> => {
+): Promise<UploadResult> => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
@@ -23,7 +50,15 @@ export const uploadToCloudinary = (
       (error, result) => {
         if (error) return reject(error);
 
-        resolve(result?.secure_url ?? "");
+        if (!result?.secure_url || !result?.public_id) {
+          return reject(new Error("Upload failed: invalid response"));
+        }
+
+        resolve({
+          url: result.secure_url,
+          publicId: result.public_id,
+          resourceType,
+        });
       },
     );
 

@@ -1,13 +1,5 @@
 import mongoose from "mongoose";
-
-const fileSchema = new mongoose.Schema(
-  {
-    url: { type: String },
-    type: { type: String },
-    name: { type: String },
-  },
-  { _id: false },
-);
+import { File } from "./fileModel.js";
 
 const messageSchema = new mongoose.Schema(
   {
@@ -26,7 +18,7 @@ const messageSchema = new mongoose.Schema(
       ref: "Conversation",
     },
 
-    files: [fileSchema],
+    files: [File],
   },
   {
     collection: "messages",
