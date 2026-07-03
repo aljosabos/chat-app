@@ -1,5 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useDebounce } from "@/hooks/useDebounce";
+import { usePageVisibility } from "@/hooks/usePageVisibility";
+import { useTabNotifications } from "@/hooks/useTabNotifications";
 import { searchUser } from "@api/user";
 import {
   ChatView,
@@ -48,6 +50,11 @@ export const Home = () => {
 
   /* For mobile view: whether the chat window is open or we are still on the conversations list */
   const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const isPageVisible = usePageVisibility();
+  const { notify } = useTabNotifications({
+    isPageVisible,
+  });
 
   const debouncedSearch = useDebounce(search);
   const { conversations, activeConversation } = useAppSelector(
@@ -125,6 +132,10 @@ export const Home = () => {
       message: Message;
       conversation: ConversationType;
     }) => {
+      if (!isPageVisible) {
+        notify();
+      }
+
       const isActiveConversation =
         activeConversation._id === message.conversation;
 
@@ -163,7 +174,7 @@ export const Home = () => {
     return () => {
       socket.off("receive message", handleReceiveMessage);
     };
-  }, [dispatch, activeConversation._id, conversations]);
+  }, [dispatch, activeConversation._id, conversations, isPageVisible, notify]);
 
   useEffect(() => {
     const handleMessageDeleted = ({ messageId }: { messageId: string }) => {

@@ -28,6 +28,7 @@ import NoVideoIcon from "./NoVideo";
 import CheckIcon from "./Check";
 import { EyeIcon } from "./Eye";
 import { EyeOffIcon } from "./EyeOff";
+import { RedEnvelopeIcon } from "./RedEnvelope";
 export {
   CommunityIcon,
   StoryIcon,
@@ -59,4 +60,5 @@ export {
   CheckIcon,
   EyeIcon,
   EyeOffIcon,
+  RedEnvelopeIcon,
 };

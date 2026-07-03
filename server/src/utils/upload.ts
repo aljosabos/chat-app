@@ -23,10 +23,6 @@ export const deleteFromCloudinary = async (
   resourceType: string,
 ): Promise<void> => {
   try {
-    console.log("Attempting to delete from Cloudinary:", {
-      publicId,
-      resourceType,
-    });
     await cloudinary.uploader.destroy(publicId, {
       resource_type: resourceType,
     });
