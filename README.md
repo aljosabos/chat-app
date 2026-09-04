@@ -121,14 +121,12 @@ RESEND_API_KEY=
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
-CLIENT_URL=http://localhost:5173
+CLIENT_URL=
 ```
 
 ---
 
 ## 📸 Screenshots
-
-You can add screenshots or GIF demonstrations here.
 
 * Login & Registration
 * Real-Time Messaging
