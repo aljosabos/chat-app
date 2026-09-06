@@ -3,6 +3,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { usePageVisibility } from "@/hooks/usePageVisibility";
 import { useTabNotifications } from "@/hooks/useTabNotifications";
 import { searchUser } from "@api/user";
+import { Call } from "@components/Call/Call";
 import {
   ChatView,
   ChatPlaceholder,
@@ -36,6 +37,7 @@ import type { User } from "@features/user/types";
 import { userSelector } from "@features/user/userSlice";
 import { socket } from "@utils/socket";
 import { useCallback, useEffect, useState } from "react";
+import { callData } from "./Home.constants";
 
 export const Home = () => {
   const dispatch = useAppDispatch();
@@ -45,6 +47,10 @@ export const Home = () => {
   const [conversationToDeleteId, setConversationToDeleteId] = useState<
     string | null
   >(null);
+
+  const [call, setCall] = useState(callData);
+  const [callAccepted] = useState(false);
+
   const [shouldShowConfirmationModal, setShouldShowConfirmationModal] =
     useState(false);
 
@@ -257,6 +263,8 @@ export const Home = () => {
           )}
         </div>
       )}
+
+      <Call call={call} setCall={setCall} callAccepted={callAccepted} />
 
       <ConfirmationModal
         isOpen={shouldShowConfirmationModal}

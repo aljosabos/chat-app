@@ -10,6 +10,7 @@ import { ChatPlaceholder } from "./ChatPlaceholder/ChatPlaceholder";
 import { ChatView } from "./ChatView/ChatView";
 import { Contacts } from "./Contacts/Contacts";
 import { ConfirmationModal } from "./ConfirmationModal/ConfirmationModal";
+import { Ringing } from "./Call/Ringing";
 
 export {
   Header,
@@ -24,4 +25,5 @@ export {
   ChatView,
   Contacts,
   ConfirmationModal,
+  Ringing,
 };

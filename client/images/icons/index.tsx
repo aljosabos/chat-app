@@ -29,6 +29,8 @@ import CheckIcon from "./Check";
 import { EyeIcon } from "./Eye";
 import { EyeOffIcon } from "./EyeOff";
 import { RedEnvelopeIcon } from "./RedEnvelope";
+import { PhoneHandsetIcon } from "./PhoneHandset";
+import { AddContactIcon } from "./AddContact";
 export {
   CommunityIcon,
   StoryIcon,
@@ -61,4 +63,6 @@ export {
   EyeIcon,
   EyeOffIcon,
   RedEnvelopeIcon,
+  PhoneHandsetIcon,
+  AddContactIcon,
 };

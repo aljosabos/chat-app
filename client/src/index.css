@@ -34,6 +34,8 @@
   --color-green-2: #008069;
   --color-green-3: #005c4b;
   --color-green-4: #025144;
+
+  --background-image-call-bg: url("./assets/images/call_background.jpg");
 }
 
 /* Animations */
@@ -236,3 +238,7 @@
     transform: translateY(100%);
   }
 }
+
+/* .call-background {
+  background-image: url("./assets/images/call_background.jpg");
+} */
