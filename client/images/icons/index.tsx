@@ -31,6 +31,10 @@ import { EyeOffIcon } from "./EyeOff";
 import { RedEnvelopeIcon } from "./RedEnvelope";
 import { PhoneHandsetIcon } from "./PhoneHandset";
 import { AddContactIcon } from "./AddContact";
+import { DialIcon } from "./Dial";
+import { SpeakerIcon } from "./Speaker";
+import { VideoDialIcon } from "./VideoDial";
+
 export {
   CommunityIcon,
   StoryIcon,
@@ -65,4 +69,7 @@ export {
   RedEnvelopeIcon,
   PhoneHandsetIcon,
   AddContactIcon,
+  DialIcon,
+  SpeakerIcon,
+  VideoDialIcon,
 };
