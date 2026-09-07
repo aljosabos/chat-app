@@ -239,4 +239,22 @@
   }
 }
 
-/
+/* Move the small video up when the call actions are shown */
+.moveVideoUpAnimation {
+  animation: moveVideoUp 0.1s forwards;
+}
+@keyframes moveVideoUp {
+  to {
+    transform: translateY(-90px);
+  }
+}
+
+/* Move the small video back down when the call actions are hidden */
+.moveVideoDownAnimation {
+  animation: moveVideoDown 0.1s forwards;
+}
+@keyframes moveVideoDown {
+  to {
+    transform: translateY(0);
+  }
+}
